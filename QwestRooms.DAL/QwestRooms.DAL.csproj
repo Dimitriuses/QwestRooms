@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\DBInitializer.cs" />
     <Compile Include="Models\Adress.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\Company.cs" />
@@ -58,6 +59,8 @@
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\Street.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\GenericRepository.cs" />
+    <Compile Include="Repository\IGenericRepository.cs" />
     <Compile Include="RoomsContext.cs" />
   </ItemGroup>
   <ItemGroup />
