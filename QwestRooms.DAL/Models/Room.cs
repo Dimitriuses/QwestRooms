@@ -14,7 +14,7 @@ namespace QwestRooms.DAL.Models
         public TimeSpan TimeToPass { get; set; }
         public int MinPayers { get; set; }
         public int MaxPlayers { get; set; }
-        public int Phone { get; set; }
+        public string Phone { get; set; }
         public string Email { get; set; }
         public int Rating { get; set; }
         public int FearLevel { get; set; }

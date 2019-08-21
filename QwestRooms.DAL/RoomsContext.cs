@@ -1,5 +1,6 @@
 namespace QwestRooms.DAL
 {
+    using QwestRooms.DAL.Configuration;
     using QwestRooms.DAL.Models;
     using System;
     using System.Data.Entity;
@@ -10,6 +11,7 @@ namespace QwestRooms.DAL
         public RoomsContext()
             : base("name=RoomsContext")
         {
+            Database.SetInitializer(new DBinicialaiser());
         }
 
         public DbSet<Adress> Adresses { get; set; }
