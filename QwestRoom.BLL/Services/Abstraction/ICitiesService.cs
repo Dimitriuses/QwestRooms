@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace QwestRoom.BLL.Services.Abstraction
 {
-    interface ICitiesService
+    public interface ICitiesService
     {
         ICollection<CityDTO> GetCities();
     }

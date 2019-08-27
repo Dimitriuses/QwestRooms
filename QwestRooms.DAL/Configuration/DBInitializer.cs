@@ -12,14 +12,21 @@ namespace QwestRooms.DAL.Configuration
     {
         public List<string> SQLs = new List<string>()
         {
-            "MockData/Citys.sql"
+            "/bin/MockData/Cities (fix).sql",
+            "/bin/MockData/Countries (fix).sql",
+            "/bin/MockData/Streets (fix).sql",
+            "/bin/MockData/Adresses(fix).sql",
+            "/bin/MockData/Companies (fix).sql",
+            "/bin/MockData/Rooms (fix).sql",
+            "/bin/MockData/Images (fix).sql"
         };
 
         protected override void Seed(RoomsContext context)
         {
+            var path = AppDomain.CurrentDomain.BaseDirectory;
             foreach(var f in SQLs)
             {
-                context.Database.ExecuteSqlCommand(GetSQLFromFile(f));
+                context.Database.ExecuteSqlCommand(GetSQLFromFile(path+f));
             }
         }
 

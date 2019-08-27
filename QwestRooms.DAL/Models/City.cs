@@ -9,7 +9,7 @@ namespace QwestRooms.DAL.Models
 {
     public class City
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         public string Name { get; set; }
         virtual public ICollection<Adress> Adresses { get; set; }

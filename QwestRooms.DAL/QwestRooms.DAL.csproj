@@ -51,11 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\DBInitializer.cs" />
-    <Compile Include="Migrations\201908210811509_initial.cs" />
-    <Compile Include="Migrations\201908210811509_initial.Designer.cs">
-      <DependentUpon>201908210811509_initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Adress.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\Company.cs" />
@@ -69,22 +64,31 @@
     <Compile Include="RoomsContext.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201908210811509_initial.resx">
-      <DependentUpon>201908210811509_initial.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="MockData\Adresses.sql" />
-    <Content Include="MockData\Citys.sql" />
-    <Content Include="MockData\Companys.sql" />
-    <Content Include="MockData\Countrys.sql" />
-    <Content Include="MockData\Images.sql" />
-    <Content Include="MockData\Rooms.sql" />
-    <Content Include="MockData\Streets.sql" />
+    <Content Include="MockData\Adresses%28fix%29.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MockData\Cities %28fix%29.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MockData\Companies %28fix%29.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MockData\Countries %28fix%29.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MockData\Images %28fix%29.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MockData\Rooms %28fix%29.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="MockData\Streets %28fix%29.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

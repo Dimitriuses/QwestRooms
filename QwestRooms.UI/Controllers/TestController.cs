@@ -1,4 +1,7 @@
-﻿using System;
+﻿using QwestRoom.BLL.Services.Abstraction;
+using QwestRoom.BLL.Services.Implementation;
+using QwestRooms.UI.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,11 +11,15 @@ namespace QwestRooms.UI.Controllers
 {
     public class TestController : Controller
     {
-        public readonly ICitiesService
-        // GET: Test
+        private readonly ICitiesService citiesService;
+        public TestController(ICitiesService _citiesService)
+        {
+            citiesService = _citiesService;
+        }
         public ActionResult Index()
         {
-            return View();
+            var cities = citiesService.GetCities().Select(cty => new CityViewModel { Id = cty.Id, Name = cty.Name }).ToList<CityViewModel>();
+            return View("View",cities);
         }
     }
 }
