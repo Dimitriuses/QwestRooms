@@ -41,10 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTOModels\AdressDTO.cs" />
     <Compile Include="DTOModels\CityDTO.cs" />
+    <Compile Include="DTOModels\CompanyDTO.cs" />
+    <Compile Include="DTOModels\CountryDTO.cs" />
+    <Compile Include="DTOModels\ImageDTO.cs" />
+    <Compile Include="DTOModels\RoomDTO.cs" />
+    <Compile Include="DTOModels\StreetDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Abstraction\ICitiesService.cs" />
+    <Compile Include="Services\Abstraction\IRoomsService.cs" />
     <Compile Include="Services\Implementation\CitiesService.cs" />
+    <Compile Include="Services\Implementation\RoomsService.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
