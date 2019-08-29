@@ -1,0 +1,73 @@
+﻿@using QwestRooms.UI.Models
+
+@model IndexViewModel
+
+@{
+    ViewBag.Title = "Page";
+}
+
+<h2>Page</h2>
+
+<div id="result">
+
+    <div id="rooms">
+
+      @{ 
+          Html.RenderPartial("RoomsCollectionView", Model.Rooms);
+      }
+    </div>
+    <nav style="clear:left" aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            @if (Model.PageViewModel.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a href="@Url.Action("Index",new { page = Model.PageViewModel.PageNumber - 1})"
+                       class="page-link">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a asp-action="Index" class="page-link">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                    </a>
+                </li>
+            }
+            @for (int i = 1; i < Model.PageViewModel.TotalPages; i++)
+            {
+                if (i == Model.PageViewModel.PageNumber)
+                {
+                    <li class="page-item disabled"><a class="page-link">@i</a></li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        @Ajax.ActionLink(i.ToString(), "GetRoomsByPage",new { page = i}, new AjaxOptions {UpdateTargetId = "rooms" })
+                         @*<a href="@Url.Action("Index",new { page = i})" class="page-link">@i</a>*@
+                    </li>
+
+                }
+            }
+            @if (Model.PageViewModel.HasNextPage)
+            {
+                <li class="page-item">
+                    <a href="@Url.Action("Index",new { page = Model.PageViewModel.PageNumber + 1})"
+                       class="page-link">
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a class="page-link">
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+

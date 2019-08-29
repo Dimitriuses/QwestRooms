@@ -1,4 +1,5 @@
 ﻿using QwestRoom.BLL.Services.Abstraction;
+using QwestRooms.UI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,10 +16,32 @@ namespace QwestRooms.UI.Controllers
             roomsService = _roomsService;
         }
         // GET: Room
-        public ActionResult Index()
+        public ActionResult Index(int page = 1)
         {
-            
-            return View(roomsService.GetRooms());
+            int pageSize = 27;
+            var listrooms = roomsService.GetRooms();
+            PageViewModel pageViewModel = new PageViewModel(listrooms.Count, page, pageSize);
+            IndexViewModel viewModel = new IndexViewModel
+            {
+                PageViewModel = pageViewModel,
+                Rooms = listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList()
+            };
+
+            return View("Page",viewModel);
+        }
+
+        public ActionResult GetRoomsByPage(int page = 1)
+        {
+            int pageSize = 27;
+            var listrooms = roomsService.GetRooms();
+            //PageViewModel pageViewModel = new PageViewModel(listrooms.Count, page, pageSize);
+            //IndexViewModel viewModel = new IndexViewModel
+            //{
+            //    PageViewModel = pageViewModel,
+            //    Rooms = listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList()
+            //};
+
+            return PartialView("RoomsCollectionView", listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList());
         }
     }
 }
