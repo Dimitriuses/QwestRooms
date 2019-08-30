@@ -4,15 +4,33 @@
 @foreach (var item in Model)
 {
     <div class="card" style="width: 18rem; height: 36rem; float: left; margin: 5px;">
-        <img style="width: 18rem; height: 18rem;" class="card-img-top border border-primary" src="@Html.DisplayFor(modelItem => item.LogoPath)" alt="Card image cap">
-        <div class="card-body">
-            <span class="badge badge-pill badge-success">@Html.DisplayFor(modelItem => item.Rating)</span>
-            <span class="badge badge-pill badge-warning">@Html.DisplayFor(modelItem => item.FearLevel)</span>
-            <span class="badge badge-pill badge-danger">@Html.DisplayFor(modelItem => item.Diffictly)</span>
-            <h5 style="height: 3.6rem; overflow: hidden; text-overflow: ellipsis;" class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
-            <p style="height: 7.5rem; overflow: hidden; text-overflow: ellipsis;" class="card-text"> @Html.DisplayFor(modelItem => item.Description)</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-
+        <div class="front" style="background-color:white;">
+            <img style="width: 18rem; height: 18rem;" class="card-img-top border border-primary" src="@Html.DisplayFor(modelItem => item.LogoPath)" alt="Card image cap">
+            <div class="card-body">
+                <span class="badge badge-pill badge-success">@Html.DisplayFor(modelItem => item.Rating)</span>
+                <span class="badge badge-pill badge-warning">@Html.DisplayFor(modelItem => item.FearLevel)</span>
+                <span class="badge badge-pill badge-danger">@Html.DisplayFor(modelItem => item.Diffictly)</span>
+                <h5 style="height: 3.6rem; overflow: hidden; text-overflow: ellipsis;" class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
+                <p style="height: 7.5rem; overflow: hidden; text-overflow: ellipsis;" class="card-text"> @Html.DisplayFor(modelItem => item.Description)</p>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+        </div>
+        <div class="back" style="background-color:black; color:white">
+            <img style="width: 18rem; height: 18rem;" class="card-img-top border border-primary" src="@Html.DisplayFor(modelItem => item.LogoPath)" alt="Card image cap">
+            <div class="card-body">
+                <span class="badge badge-pill badge-success">@Html.DisplayFor(modelItem => item.Rating)</span>
+                <span class="badge badge-pill badge-warning">@Html.DisplayFor(modelItem => item.FearLevel)</span>
+                <span class="badge badge-pill badge-danger">@Html.DisplayFor(modelItem => item.Diffictly)</span>
+                <h5 style="height: 3.6rem; overflow: hidden; text-overflow: ellipsis;" class="card-title">Phone: @Html.DisplayFor(modelItem => item.Phone)</h5>
+                <h5 style="height: 7.5rem; overflow: hidden; text-overflow: ellipsis;" class="card-text">Email: @Html.DisplayFor(modelItem => item.Email)</h5>
+                <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
         </div>
     </div>
+    <script>
+        $(".card").flip({
+            axis: 'y',
+            trigger: 'hover'
+        })
+    </script>
 }
