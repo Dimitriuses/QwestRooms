@@ -26,7 +26,7 @@ namespace QwestRooms.UI.Controllers
                 PageViewModel = pageViewModel,
                 Rooms = listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList()
             };
-
+            //viewModel.getAdresesWithRooms();
             return View("Page",viewModel);
         }
 

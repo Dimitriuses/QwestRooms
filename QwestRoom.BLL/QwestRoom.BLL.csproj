@@ -49,8 +49,10 @@
     <Compile Include="DTOModels\RoomDTO.cs" />
     <Compile Include="DTOModels\StreetDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\Abstraction\IAdressesService.cs" />
     <Compile Include="Services\Abstraction\ICitiesService.cs" />
     <Compile Include="Services\Abstraction\IRoomsService.cs" />
+    <Compile Include="Services\Implementation\AdressesService.cs" />
     <Compile Include="Services\Implementation\CitiesService.cs" />
     <Compile Include="Services\Implementation\RoomsService.cs" />
   </ItemGroup>
