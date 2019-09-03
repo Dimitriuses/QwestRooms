@@ -11,7 +11,7 @@ namespace QwestRooms.UI.Models
         public IEnumerable<RoomDTO> Rooms { get; set; }
         public PageViewModel PageViewModel { get; set; }
 
-        //public IEnumerable<AdressDTO> Adresses { get; set; }
+        public IEnumerable<AdressDTO> Adresses { get; set; }
 
         //public void getAdresesWithRooms()
         //{

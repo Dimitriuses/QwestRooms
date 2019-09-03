@@ -11,20 +11,24 @@ namespace QwestRooms.UI.Controllers
     public class RoomController : Controller
     {
         private readonly IRoomsService roomsService;
-        public RoomController(IRoomsService _roomsService)
+        private readonly IAdressesService adressesService;
+        public RoomController(IRoomsService _roomsService, IAdressesService _adressesService )
         {
             roomsService = _roomsService;
+            adressesService = _adressesService;
         }
         // GET: Room
         public ActionResult Index(int page = 1)
         {
             int pageSize = 27;
             var listrooms = roomsService.GetRooms();
+            var listadresses = adressesService.GetAdresses();
             PageViewModel pageViewModel = new PageViewModel(listrooms.Count, page, pageSize);
             IndexViewModel viewModel = new IndexViewModel
             {
                 PageViewModel = pageViewModel,
-                Rooms = listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList()
+                Rooms = listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                Adresses = listadresses
             };
             //viewModel.getAdresesWithRooms();
             return View("Page",viewModel);
@@ -43,5 +47,25 @@ namespace QwestRooms.UI.Controllers
 
             return PartialView("RoomsCollectionView", listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList());
         }
+
+        public ActionResult GetAllCountry()
+        {
+            var listadresses = adressesService.GetAdresses();
+            HashSet<CountryVievModel> Countries = new HashSet<CountryVievModel>();
+
+            foreach (var item in listadresses)
+            {
+                Countries.Add(new CountryVievModel() {
+                    Id = item.Country.Id,
+                    Name = item.Country.Name
+                });
+            }
+            return PartialView("CountryColectionViev", Countries.OrderBy(item => item.Name).ToList());
+        }
+
+        //public ActionResult GetAllCitiesByCouyntries(int i)
+        //{
+
+        //}
     }
 }

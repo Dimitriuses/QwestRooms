@@ -18,13 +18,10 @@
                     </label>
                 </div>
                 <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Country
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="button">Action</button>
-                        <button class="dropdown-item" type="button">Another action</button>
-                        <button class="dropdown-item" type="button">Something else here</button>
+                    @Ajax.ActionLink("Country", "GetAllCountry", new AjaxOptions { UpdateTargetId = "Countries" })
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                    <div id="Countries" class="dropdown-menu" aria-labelledby="dropdownMenu2">
+
                     </div>
                 </div>
                 <div class="dropdown">

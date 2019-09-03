@@ -25,6 +25,7 @@ namespace QwestRooms.UI.App_Start
             builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>));
             builder.RegisterType<CitiesService>().As<ICitiesService>();
             builder.RegisterType<RoomsService>().As<IRoomsService>();
+            builder.RegisterType<AdressesService>().As<IAdressesService>();
 
 
             DependencyResolver.SetResolver(new AutofacDependencyResolver(builder.Build()));

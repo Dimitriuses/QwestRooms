@@ -1,17 +1,18 @@
 namespace QwestRooms.DAL
 {
+    using Microsoft.AspNet.Identity.EntityFramework;
     using QwestRooms.DAL.Configuration;
     using QwestRooms.DAL.Models;
     using System;
     using System.Data.Entity;
     using System.Linq;
 
-    public class RoomsContext : DbContext
+    public class RoomsContext : IdentityDbContext<AppUser>
     {
         public RoomsContext()
             : base("name=RoomsContext")
         {
-            Database.SetInitializer(new DBinicialaiser());
+            //Database.SetInitializer(new DBinicialaiser());
         }
 
         public DbSet<Adress> Adresses { get; set; }
@@ -21,6 +22,11 @@ namespace QwestRooms.DAL
         public DbSet<Company> Companies { get; set; }
         public DbSet<Room> Rooms { get; set; }
         public DbSet<Image> Images { get; set; }
+
+        public static RoomsContext Create()
+        {
+            return new RoomsContext();
+        }
     }
 
 }
