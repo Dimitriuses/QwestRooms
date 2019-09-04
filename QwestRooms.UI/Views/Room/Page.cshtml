@@ -18,30 +18,31 @@
                     </label>
                 </div>
                 <div class="dropdown">
-                    @Ajax.ActionLink("Country", "GetAllCountry", new AjaxOptions { UpdateTargetId = "Countries" })
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-                    <div id="Countries" class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    @*@Ajax.ActionLink("Country", "GetAllCountry", new AjaxOptions { UpdateTargetId = "Countries" }@*, new {@class = "btn btn-secondary dropdown-toggle", @type = "button", @id = "dropdownMenu2" *@
+                    <label>Country</label>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuCountry" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                    <div id="Countries" class="dropdown-menu" aria-labelledby="dropdownMenu2" style=" overflow:auto; height:300px">
+                        @{ 
+                            Html.RenderPartial("CountryColectionViev", ViewData["CountriData"]);
+                        }
+                    </div>
+                </div>
+                <div class="dropdown">
+                    <label>City</label>
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        City
+                    </button>
+                    <div id="Cities" class="dropdown-menu" aria-labelledby="dropdownMenu2" style=" overflow:auto; height:300px">
 
                     </div>
                 </div>
                 <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        City
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="button">Action</button>
-                        <button class="dropdown-item" type="button">Another action</button>
-                        <button class="dropdown-item" type="button">Something else here</button>
-                    </div>
-                </div>
-                <div class="dropdown">
+                    <label>Home</label>
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Home
                     </button>
                     <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                        <button class="dropdown-item" type="button">Action</button>
-                        <button class="dropdown-item" type="button">Another action</button>
-                        <button class="dropdown-item" type="button">Something else here</button>
+
                     </div>
                 </div>
             </div>

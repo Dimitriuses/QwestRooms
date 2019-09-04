@@ -2,5 +2,13 @@
 
 @foreach (var item in Model)
 {
-    <button class="dropdown-item" type="button">@item.Name</button>
+    @Ajax.ActionLink(item.Name, "GetAllCitiesByCouyntries", new { i = item.Id }, new AjaxOptions { UpdateTargetId = "Cities" }, new { @class = "dropdown-item", @id = "Country"+item.Id });
+    @*<input class="dropdown-item" type="button" value="@item.Name" ></input>*@
+
+    <script>
+        $('#Country'+@item.Id).click(function(){
+            console.log("@item.Name click");
+            $('#dropdownMenuCountry').html("@item.Name");
+        });
+    </script>
 }

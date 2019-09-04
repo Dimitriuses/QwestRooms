@@ -31,6 +31,8 @@ namespace QwestRooms.UI.Controllers
                 Adresses = listadresses
             };
             //viewModel.getAdresesWithRooms();
+            ViewBag.Country = "Не Вибрано";
+            ViewData["CountriData"] = GetAllCountry();
             return View("Page",viewModel);
         }
 
@@ -48,24 +50,49 @@ namespace QwestRooms.UI.Controllers
             return PartialView("RoomsCollectionView", listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList());
         }
 
-        public ActionResult GetAllCountry()
+        public /*ActionResult*/ List<CountryVievModel> GetAllCountry()
         {
             var listadresses = adressesService.GetAdresses();
             HashSet<CountryVievModel> Countries = new HashSet<CountryVievModel>();
-
+            //Countries.Add(new CountryVievModel { Id = -1, Name = "Не вибрано" });
             foreach (var item in listadresses)
             {
-                Countries.Add(new CountryVievModel() {
-                    Id = item.Country.Id,
-                    Name = item.Country.Name
-                });
+                int Dublicate = 0;
+                foreach (var item1 in Countries)
+                {
+                    if(item1.Id == item.Country.Id)
+                    {
+                        Dublicate++;
+                    }
+                }
+                if (Dublicate == 0)
+                {
+                    Countries.Add(new CountryVievModel() {
+                        Id = item.Country.Id,
+                        Name = item.Country.Name
+                    });
+                }
+
             }
-            return PartialView("CountryColectionViev", Countries.OrderBy(item => item.Name).ToList());
+
+            return  /*PartialView("CountryColectionViev", */Countries.OrderBy(item => item.Name).ToList()/*)*/;
         }
 
-        //public ActionResult GetAllCitiesByCouyntries(int i)
-        //{
-
-        //}
+        public ActionResult GetAllCitiesByCouyntries(int i)
+        {
+            var listadresses = adressesService.GetAdresses();
+            List<CityViewModel> cities = new List<CityViewModel>();
+            string country = "";
+            foreach (var item in listadresses)
+            {
+                if(item.Country.Id == i)
+                {
+                    cities.Add(new CityViewModel { Id = item.City.Id, Name = item.City.Name });
+                    country = item.Country.Name;
+                }
+            }
+            ViewBag.Country = country;
+            return PartialView("CitiesColectionView", cities.OrderBy(itrm => itrm.Name).ToList());
+        }
     }
 }

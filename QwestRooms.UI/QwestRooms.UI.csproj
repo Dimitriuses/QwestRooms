@@ -188,6 +188,7 @@
     <Content Include="Views\Room\RoomsCollectionView.cshtml" />
     <Content Include="Views\Acount\Register.cshtml" />
     <Content Include="Views\Room\CountryColectionViev.cshtml" />
+    <Content Include="Views\Room\CitiesColectionView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

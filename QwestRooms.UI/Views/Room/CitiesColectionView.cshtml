@@ -1,0 +1,10 @@
+﻿@model IEnumerable<QwestRooms.UI.Models.CityViewModel>
+
+
+
+@foreach (var item in Model)
+{
+<button class="dropdown-item" type="button">@item.Name</button>
+}
+
+
