@@ -1,0 +1,17 @@
+﻿@model IEnumerable<QwestRoom.BLL.DTOModels.AdressDTO>
+
+
+
+@foreach (var item in Model)
+{
+
+    @Ajax.ActionLink(item.Street.Name + " " + item.HouseNumber, "PushHomeIdToVievBag", new { homeId = item.Id }, null, new { @class = "dropdown-item pcity", @id = item.Id });
+    @*<button class="dropdown-item home" type="button">@item.Street.Name @item.HouseNumber</button>*@
+}
+
+<script>
+    $('.home').click(function () {
+        console.log($(this).attr('id') + $(this).text());
+        $('#dropdownMenuHome').text($(this).text());
+    });
+</script>

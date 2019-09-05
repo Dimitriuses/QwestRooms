@@ -4,7 +4,15 @@
 
 @foreach (var item in Model)
 {
-<button class="dropdown-item" type="button">@item.Name</button>
+    @Ajax.ActionLink(item.Name, "GetAllAdressesByCoyntryAndCities", new { CountryId = ViewBag.CountryId, CityId = item.Id }, new AjaxOptions { UpdateTargetId = "Homes" }, new { @class = "dropdown-item pcity", @id = item.Id });
+    @*<button class="dropdown-item" type="button">@item.Name</button>*@
 }
 
 
+<script>
+    $('.pcity').click(function () {
+        console.log($(this).attr('id') + $(this).text());
+        $('#dropdownMenuCities').text($(this).text());
+        $('#dropdownMenuHome').text("Не Вказано");
+    });              
+</script>

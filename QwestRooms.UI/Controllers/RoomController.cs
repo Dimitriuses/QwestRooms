@@ -31,7 +31,7 @@ namespace QwestRooms.UI.Controllers
                 Adresses = listadresses
             };
             //viewModel.getAdresesWithRooms();
-            ViewBag.Country = "Не Вибрано";
+            //ViewBag.Country = "Не Вибрано";
             ViewData["CountriData"] = GetAllCountry();
             return View("Page",viewModel);
         }
@@ -82,17 +82,40 @@ namespace QwestRooms.UI.Controllers
         {
             var listadresses = adressesService.GetAdresses();
             List<CityViewModel> cities = new List<CityViewModel>();
-            string country = "";
+            //string country = "";
             foreach (var item in listadresses)
             {
                 if(item.Country.Id == i)
                 {
                     cities.Add(new CityViewModel { Id = item.City.Id, Name = item.City.Name });
-                    country = item.Country.Name;
+                    //country = item.Country.Name;
                 }
             }
-            ViewBag.Country = country;
+            ViewBag.CountryId = i;
+            //HttpContext.Request.Cookies.Add()
             return PartialView("CitiesColectionView", cities.OrderBy(itrm => itrm.Name).ToList());
+        }
+        public ActionResult GetAllAdressesByCoyntryAndCities(int CountryId,int CityId)
+        {
+            var listadresses = adressesService.GetAdresses();
+            var listfilteraddress = adressesService.GetAdresses();
+            listfilteraddress.Clear();
+            foreach (var item in listadresses)
+            {
+                if(item.Country.Id == CountryId && item.City.Id == CityId)
+                {
+                    listfilteraddress.Add(item);
+                }
+            }
+            ViewBag.CityId = CityId;
+            Session["CityId"] = CityId;
+            return PartialView("HomeColectionView", listfilteraddress.OrderBy(itrm => itrm.Street.Name).ToList());
+        }
+
+        public void PushHomeIdToVievBag(int homeId)
+        {
+            ViewBag.HomeId = homeId;
+            Session["HomeId"] = homeId;
         }
     }
 }
