@@ -33,6 +33,9 @@ namespace QwestRooms.UI.Controllers
             //viewModel.getAdresesWithRooms();
             //ViewBag.Country = "Не Вибрано";
             ViewData["CountriData"] = GetAllCountry();
+            Session["CountryId"] = -1;
+            Session["CityId"] = -1;
+            Session["HomeId"] = -1;
             return View("Page",viewModel);
         }
 
@@ -92,6 +95,9 @@ namespace QwestRooms.UI.Controllers
                 }
             }
             ViewBag.CountryId = i;
+            Session["CountryId"] = i;
+            Session["CityId"] = -1;
+            Session["HomeId"] = -1;
             //HttpContext.Request.Cookies.Add()
             return PartialView("CitiesColectionView", cities.OrderBy(itrm => itrm.Name).ToList());
         }
@@ -109,6 +115,7 @@ namespace QwestRooms.UI.Controllers
             }
             ViewBag.CityId = CityId;
             Session["CityId"] = CityId;
+            Session["HomeId"] = -1;
             return PartialView("HomeColectionView", listfilteraddress.OrderBy(itrm => itrm.Street.Name).ToList());
         }
 
@@ -117,5 +124,82 @@ namespace QwestRooms.UI.Controllers
             ViewBag.HomeId = homeId;
             Session["HomeId"] = homeId;
         }
+
+        public ActionResult Filter()
+        {
+            int CountryId = Convert.ToInt32(Session["CountryId"]);
+            int CityId = Convert.ToInt32(Session["CityId"]);
+            int HomeId = Convert.ToInt32(Session["HomeId"]);
+            int pageSize = 27;
+            if (CountryId >= 0)
+            {
+                var listrooms = roomsService.GetRooms();
+                var listadresses = adressesService.GetAdresses();
+                var listFiltredRooms = roomsService.GetRooms();
+                listFiltredRooms.Clear();
+                if (CityId >= 0)
+                {
+                    if (HomeId >= 0)
+                    {
+                        foreach (var item in listrooms)
+                        {
+                            if (item.Adress.Id == HomeId)
+                            {
+                                listFiltredRooms.Add(item);
+                            }
+                        }
+                        PageViewModel pageViewModel = new PageViewModel(listFiltredRooms.Count, 1, pageSize);
+                        IndexViewModel viewModel = new IndexViewModel
+                        {
+                            PageViewModel = pageViewModel,
+                            Rooms = listFiltredRooms.Skip((1 - 1) * pageSize).Take(pageSize).ToList(),
+                            Adresses = listadresses
+                        };
+                        return PartialView("RoomsCollectionView", listFiltredRooms);
+                    }
+                    else
+                    {
+                        foreach (var item in listrooms)
+                        {
+                            if (item.Adress.Country.Id == CountryId && item.Adress.City.Id == CityId)
+                            {
+                                listFiltredRooms.Add(item);
+                            }
+                        }
+                        PageViewModel pageViewModel = new PageViewModel(listFiltredRooms.Count, 1, pageSize);
+                        IndexViewModel viewModel = new IndexViewModel
+                        {
+                            PageViewModel = pageViewModel,
+                            Rooms = listFiltredRooms.Skip((1 - 1) * pageSize).Take(pageSize).ToList(),
+                            Adresses = listadresses
+                        };
+                        return PartialView("RoomsCollectionView", listFiltredRooms);
+                    }
+
+                }
+                else
+                {
+                    foreach (var item in listrooms)
+                    {
+                        if (item.Adress.Country.Id == CountryId)
+                        {
+                            listFiltredRooms.Add(item);
+                        }
+                    }
+                    PageViewModel pageViewModel = new PageViewModel(listFiltredRooms.Count, 1, pageSize);
+                    IndexViewModel viewModel = new IndexViewModel
+                    {
+                        PageViewModel = pageViewModel,
+                        Rooms = listFiltredRooms.Skip((1 - 1) * pageSize).Take(pageSize).ToList(),
+                        Adresses = listadresses
+                    };
+                    return PartialView("RoomsCollectionView", listFiltredRooms);
+                }
+            }
+            return null;
+
+        }
+
+
     }
 }

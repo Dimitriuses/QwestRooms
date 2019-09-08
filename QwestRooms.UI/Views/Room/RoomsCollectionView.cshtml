@@ -1,8 +1,12 @@
-﻿@model List<QwestRoom.BLL.DTOModels.RoomDTO>
+﻿@using QwestRooms.UI.Models
+
+@model IndexViewModel
+@*@model List<QwestRoom.BLL.DTOModels.RoomDTO>*@
 <style>
     .flip-card {
         perspective: 1000px;
     }
+
     .flip-card-inner {
         position: relative;
         width: 100%;
@@ -11,19 +15,23 @@
         transition: transform 0.8s;
         transform-style: preserve-3d;
     }
+
     .flip-card:hover .flip-card-inner {
         transform: rotateY(180deg);
     }
+
     .flip-card-front, .flip-card-back {
         position: absolute;
         width: 100%;
         height: 100%;
         backface-visibility: hidden;
     }
+
     .flip-card-front {
         background-color: #bbb;
         color: black;
     }
+
     .flip-card-back {
         background-color: dodgerblue;
         color: white;
@@ -31,7 +39,7 @@
     }
 </style>
 
-@foreach (var item in Model)
+@foreach (var item in Model.Rooms)
 {
     <div class="card flip-card" style="width: 18rem; height: 36rem; float: left; margin: 5px;">
         <div class="flip-card-inner">
@@ -58,10 +66,63 @@
             </div>
         </div>
     </div>
+    <nav style="clear:left" aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+            @if (Model.PageViewModel.HasPreviousPage)
+            {
+                <li class="page-item">
+                    <a href="@Ajax.ActionLink("", "GetRoomsByPage", new { page = Model.PageViewModel.PageNumber - 1 }, new AjaxOptions { UpdateTargetId = "rooms" })"
+                       class="page-link">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a asp-action="Index" class="page-link">
+                        <i class="glyphicon glyphicon-chevron-left"></i>
+                    </a>
+                </li>
+            }
+            @for (int i = 1; i < Model.PageViewModel.TotalPages; i++)
+            {
+                if (i == Model.PageViewModel.PageNumber)
+                {
+                    <li class="page-item disabled"><a class="page-link">@i</a></li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        @Ajax.ActionLink(i.ToString(), "GetRoomsByPage", new { page = i }, new AjaxOptions { UpdateTargetId = "rooms" })
+                        @*<a href="@Url.Action("Index",new { page = i})" class="page-link">@i</a>*@
+                    </li>
+
+                }
+            }
+            @if (Model.PageViewModel.HasNextPage)
+            {
+                <li class="page-item">
+                    <a href="@Ajax.ActionLink("", "GetRoomsByPage", new { page = Model.PageViewModel.PageNumber + 1 }, new AjaxOptions { UpdateTargetId = "rooms" })"
+                       class="page-link">
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item disabled">
+                    <a class="page-link">
+                        <i class="glyphicon glyphicon-chevron-right"></i>
+                    </a>
+                </li>
+            }
+        </ul>
+    </nav>
     @*<script>
-        $(".card").flip({
-            axis: 'y',
-            trigger: 'hover'
-        })
-    </script>*@
+            $(".card").flip({
+                axis: 'y',
+                trigger: 'hover'
+            })
+        </script>*@
 }
