@@ -59,8 +59,7 @@
             <div class="col">
 
             </div>
-            <button id="filterbtn" class="btn btn-primary"></button>
-            @Ajax.ActionLink("Filter", "Filter", null , new AjaxOptions { UpdateTargetId = "rooms" });
+            @*<button id="filterbtn" class="btn btn-primary"></button>*@
             <script>
                 $('#filterbtn').click(function () {
                     //console.log('@ViewBag.CountryId');
@@ -68,6 +67,7 @@
                 })
             </script>
         </div>
+        @Ajax.ActionLink("Filter", "Filter",  new AjaxOptions { UpdateTargetId = "rooms" });
     </div>
 </div>
 <div id="result">

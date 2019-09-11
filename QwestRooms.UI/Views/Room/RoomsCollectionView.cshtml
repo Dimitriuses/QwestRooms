@@ -66,6 +66,7 @@
             </div>
         </div>
     </div>
+}
     <nav style="clear:left" aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
             @if (Model.PageViewModel.HasPreviousPage)
@@ -103,7 +104,7 @@
             @if (Model.PageViewModel.HasNextPage)
             {
                 <li class="page-item">
-                    <a href="@Ajax.ActionLink("", "GetRoomsByPage", new { page = Model.PageViewModel.PageNumber + 1 }, new AjaxOptions { UpdateTargetId = "rooms" })"
+                    <a href="@Ajax.ActionLink(" ", "GetRoomsByPage", new { page = Model.PageViewModel.PageNumber + 1 }, new AjaxOptions { UpdateTargetId = "rooms" })"
                        class="page-link">
                         <i class="glyphicon glyphicon-chevron-right"></i>
                     </a>
@@ -125,4 +126,3 @@
                 trigger: 'hover'
             })
         </script>*@
-}
