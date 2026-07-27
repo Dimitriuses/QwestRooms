@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="SUBMARINE">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#04141c"/>
+      <stop offset="100%" stop-color="#0d3244"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <rect x="26" y="26" width="548" height="548" fill="none" stroke="#5fd4e8" stroke-width="3" opacity="0.35"/>
+  <circle cx='300' cy='265' r='95' fill='none' stroke='#5fd4e8' stroke-width='12'/><circle cx='300' cy='265' r='62' fill='none' stroke='#5fd4e8' stroke-width='7' opacity='0.65'/><circle cx='412' cy='265' r='7' fill='#5fd4e8'/><circle cx='379' cy='344' r='7' fill='#5fd4e8'/><circle cx='300' cy='377' r='7' fill='#5fd4e8'/><circle cx='221' cy='344' r='7' fill='#5fd4e8'/><circle cx='188' cy='265' r='7' fill='#5fd4e8'/><circle cx='221' cy='186' r='7' fill='#5fd4e8'/><circle cx='300' cy='153' r='7' fill='#5fd4e8'/><circle cx='379' cy='186' r='7' fill='#5fd4e8'/>
+  <text x="300" y="486" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="600"
+        letter-spacing="5" fill="#5fd4e8" text-anchor="middle">SUBMARINE</text>
+</svg>

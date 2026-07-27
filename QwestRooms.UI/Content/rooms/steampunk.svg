@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="STEAMPUNK">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#241a12"/>
+      <stop offset="100%" stop-color="#4a3524"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <rect x="26" y="26" width="548" height="548" fill="none" stroke="#e0a45c" stroke-width="3" opacity="0.35"/>
+  <circle cx='300' cy='265' r='58' fill='none' stroke='#e0a45c' stroke-width='11'/><circle cx='300' cy='265' r='20' fill='#e0a45c'/><line x1='358' y1='265' x2='392' y2='265' stroke='#e0a45c' stroke-width='16' stroke-linecap='round'/><line x1='341' y1='306' x2='365' y2='330' stroke='#e0a45c' stroke-width='16' stroke-linecap='round'/><line x1='300' y1='323' x2='300' y2='357' stroke='#e0a45c' stroke-width='16' stroke-linecap='round'/><line x1='259' y1='306' x2='235' y2='330' stroke='#e0a45c' stroke-width='16' stroke-linecap='round'/><line x1='242' y1='265' x2='208' y2='265' stroke='#e0a45c' stroke-width='16' stroke-linecap='round'/><line x1='259' y1='224' x2='235' y2='200' stroke='#e0a45c' stroke-width='16' stroke-linecap='round'/><line x1='300' y1='207' x2='300' y2='173' stroke='#e0a45c' stroke-width='16' stroke-linecap='round'/><line x1='341' y1='224' x2='365' y2='200' stroke='#e0a45c' stroke-width='16' stroke-linecap='round'/>
+  <text x="300" y="486" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="600"
+        letter-spacing="5" fill="#e0a45c" text-anchor="middle">STEAMPUNK</text>
+</svg>
