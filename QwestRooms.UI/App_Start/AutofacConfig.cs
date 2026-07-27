@@ -1,7 +1,7 @@
 using Autofac;
 using Autofac.Integration.Mvc;
-using QwestRoom.BLL.Services.Abstraction;
-using QwestRoom.BLL.Services.Implementation;
+using QwestRooms.BLL.Services.Abstraction;
+using QwestRooms.BLL.Services.Implementation;
 using QwestRooms.DAL;
 using QwestRooms.DAL.Repositories;
 using System.Data.Entity;

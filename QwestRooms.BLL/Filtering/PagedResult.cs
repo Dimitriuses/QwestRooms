@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace QwestRoom.BLL.Filtering
+namespace QwestRooms.BLL.Filtering
 {
     /// <summary>
     /// One page of results plus the total number of rows that matched, so the caller can render

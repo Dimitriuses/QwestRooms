@@ -1,7 +1,7 @@
-using QwestRoom.BLL.DTOModels;
+using QwestRooms.BLL.DTOModels;
 using System.Collections.Generic;
 
-namespace QwestRoom.BLL.Services.Abstraction
+namespace QwestRooms.BLL.Services.Abstraction
 {
     /// <summary>
     /// Supplies the options for the country -> city -> address filter. Each call returns only the

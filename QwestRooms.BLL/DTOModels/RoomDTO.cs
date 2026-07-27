@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace QwestRoom.BLL.DTOModels
+namespace QwestRooms.BLL.DTOModels
 {
     public class RoomDTO
     {

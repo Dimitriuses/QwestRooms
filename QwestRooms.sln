@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QwestRooms.DAL", "QwestRooms.DAL\QwestRooms.DAL.csproj", "{C936227A-3ADE-452F-9EBB-DCA8A7431E74}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QwestRoom.BLL", "QwestRoom.BLL\QwestRoom.BLL.csproj", "{118332A1-A7A6-4716-BC7B-F5AA4E1DD761}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QwestRooms.BLL", "QwestRooms.BLL\QwestRooms.BLL.csproj", "{118332A1-A7A6-4716-BC7B-F5AA4E1DD761}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QwestRooms.UI", "QwestRooms.UI\QwestRooms.UI.csproj", "{CEF747FD-6319-44F1-9448-B58BEC4A02F4}"
 EndProject

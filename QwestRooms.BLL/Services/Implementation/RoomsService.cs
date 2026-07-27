@@ -1,12 +1,12 @@
-using QwestRoom.BLL.DTOModels;
-using QwestRoom.BLL.Filtering;
-using QwestRoom.BLL.Mapping;
-using QwestRoom.BLL.Services.Abstraction;
+using QwestRooms.BLL.DTOModels;
+using QwestRooms.BLL.Filtering;
+using QwestRooms.BLL.Mapping;
+using QwestRooms.BLL.Services.Abstraction;
 using QwestRooms.DAL.Models;
 using QwestRooms.DAL.Repositories;
 using System.Linq;
 
-namespace QwestRoom.BLL.Services.Implementation
+namespace QwestRooms.BLL.Services.Implementation
 {
     public class RoomsService : IRoomsService
     {

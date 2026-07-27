@@ -1,5 +1,5 @@
-using QwestRoom.BLL.Filtering;
-using QwestRoom.BLL.Services.Abstraction;
+using QwestRooms.BLL.Filtering;
+using QwestRooms.BLL.Services.Abstraction;
 using QwestRooms.UI.Models;
 using System.Web.Mvc;
 

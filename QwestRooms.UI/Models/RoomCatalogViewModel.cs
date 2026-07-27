@@ -1,4 +1,4 @@
-using QwestRoom.BLL.DTOModels;
+using QwestRooms.BLL.DTOModels;
 using System.Collections.Generic;
 
 namespace QwestRooms.UI.Models

@@ -1,4 +1,4 @@
-namespace QwestRoom.BLL.Filtering
+namespace QwestRooms.BLL.Filtering
 {
     /// <summary>
     /// The criteria a room list can be narrowed by. All properties are optional; a filter with

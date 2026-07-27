@@ -1,4 +1,4 @@
-namespace QwestRoom.BLL.DTOModels
+namespace QwestRooms.BLL.DTOModels
 {
     public class AddressDTO
     {

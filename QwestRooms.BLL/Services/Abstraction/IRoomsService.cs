@@ -1,7 +1,7 @@
-using QwestRoom.BLL.DTOModels;
-using QwestRoom.BLL.Filtering;
+using QwestRooms.BLL.DTOModels;
+using QwestRooms.BLL.Filtering;
 
-namespace QwestRoom.BLL.Services.Abstraction
+namespace QwestRooms.BLL.Services.Abstraction
 {
     public interface IRoomsService
     {

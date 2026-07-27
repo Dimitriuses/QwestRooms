@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace QwestRoom.BLL.DTOModels
+namespace QwestRooms.BLL.DTOModels
 {
     public class CityDTO
     {

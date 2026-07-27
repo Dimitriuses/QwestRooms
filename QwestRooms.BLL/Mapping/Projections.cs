@@ -1,10 +1,10 @@
-using QwestRoom.BLL.DTOModels;
+using QwestRooms.BLL.DTOModels;
 using QwestRooms.DAL.Models;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 
-namespace QwestRoom.BLL.Mapping
+namespace QwestRooms.BLL.Mapping
 {
     /// <summary>
     /// Entity-to-DTO projections, declared once and reused by the services.

@@ -7,8 +7,8 @@
     <ProjectGuid>{118332A1-A7A6-4716-BC7B-F5AA4E1DD761}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QwestRoom.BLL</RootNamespace>
-    <AssemblyName>QwestRoom.BLL</AssemblyName>
+    <RootNamespace>QwestRooms.BLL</RootNamespace>
+    <AssemblyName>QwestRooms.BLL</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
