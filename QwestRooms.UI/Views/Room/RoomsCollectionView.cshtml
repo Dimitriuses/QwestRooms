@@ -17,6 +17,15 @@
     }
 }
 
+@{
+    // The seed data hotlinks room logos from real escape-room sites as they stood in 2019, and
+    // most of those images are gone. Falling back to a bundled placeholder keeps the grid tidy
+    // instead of filling it with broken-image icons. Clearing onerror first avoids a loop if the
+    // placeholder itself ever fails to load.
+    var placeholder = Url.Content("~/Content/room-placeholder.svg");
+    var onImageError = "this.onerror=null;this.src='" + placeholder + "';";
+}
+
 @if (Model.Rooms.Count == 0)
 {
     <p class="lead text-muted">No rooms match this filter.</p>
@@ -29,7 +38,8 @@
             <div class="flip-card-front" style="background-color:white;">
                 <img class="card-img-top border border-primary room-logo"
                      style="width: 18rem; height: 18rem; object-fit: cover;"
-                     src="@item.LogoPath" alt="@item.Name" />
+                     src="@(string.IsNullOrWhiteSpace(item.LogoPath) ? placeholder : item.LogoPath)"
+                     onerror="@onImageError" alt="@item.Name" />
                 <div class="card-body">
                     <span class="badge badge-pill badge-success" title="Rating">@item.Rating</span>
                     <span class="badge badge-pill badge-warning" title="Fear level">@item.FearLevel</span>
@@ -41,7 +51,8 @@
             <div class="flip-card-back" style="background-color:black; color:white">
                 <img class="card-img-top border border-primary room-logo"
                      style="width: 18rem; height: 18rem; object-fit: cover;"
-                     src="@item.LogoPath" alt="@item.Name" />
+                     src="@(string.IsNullOrWhiteSpace(item.LogoPath) ? placeholder : item.LogoPath)"
+                     onerror="@onImageError" alt="@item.Name" />
                 <div class="card-body">
                     <p class="card-text">@item.MinPlayers&ndash;@item.MaxPlayers players</p>
                     <p class="card-text">@item.TimeToPass.TotalMinutes.ToString("0") minutes</p>

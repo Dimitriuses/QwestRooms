@@ -222,24 +222,49 @@ merges to `master`.
 
 ---
 
-## Phase 5 - Presentation
+## Phase 5 - Presentation -- COMPLETE (except 5.6)
 
-The README is what most reviewers will actually read. Budget real time for it.
+**Verified 2026-07-27:** Release build clean with zero warnings and zero advisories; 34/34 tests
+pass; every endpoint returns 200; screenshots captured from the actually-running app.
 
-- [ ] **5.1 Write the README.** What the project is, a screenshot or GIF of the working filter,
-      the three-layer architecture and why, the stack, and honest setup steps (prerequisites,
-      restore, LocalDB, run). Open with one sentence framing it as a 2019 learning project,
-      cleaned up in 2026 - that framing converts "dated code" into "shows self-assessment".
-- [ ] **5.2 Fix the broken room logos before screenshotting.** Every room's `LogoPath` in the seed
-      data is a hotlink to a real 2019 escape-room website. Many are already dead (one host,
-      `*.netdna-ssl.com`, is fully decommissioned), so the card grid will screenshot with broken
-      images. Either add an `onerror` fallback to a bundled placeholder image, or rewrite the seed
-      `LogoPath` values to local placeholders. This is the first thing a reviewer sees.
-- [ ] **5.3 Add a LICENSE** (MIT is the default choice).
-- [ ] **5.4 Note the known limitations** in the README rather than leaving a reviewer to find
-      them. Naming what you'd do differently is a strength signal, not a weakness.
-- [ ] **5.5 Tag a release** (`v1.0`) so the history has a defined endpoint.
-- [ ] **5.6 Delete this file,** then archive the repo on GitHub.
+- [x] **5.1 Wrote the README** - features, stack, an architecture diagram with the reasoning,
+      setup steps, how to run the tests, a candid "What changed in 2026" section, and the build
+      badge. Two screenshots captured from the running application with headless Chrome and
+      committed under `docs/images/`.
+- [x] **5.2 Fixed the broken room logos.** Sampled 25 of the 192 distinct logo URLs: **17 were
+      dead (68%)**. Added a bundled placeholder (`Content/room-placeholder.svg`) with an `onerror`
+      fallback, so working logos still display and dead ones degrade to something that looks
+      deliberate rather than broken. The real URLs are kept, since they are honest seed data.
+- [x] **5.3 Added an MIT LICENSE.** The copyright line uses the GitHub handle `Dimitriuses`;
+      change it to your legal name if you prefer.
+- [x] **5.4 Documented the known limitations** in the README - read-only catalogue, auth that is
+      demonstrated but guards nothing, dead logo hotlinks, generated seed data, no migrations, and
+      the deliberate choice not to port to .NET 8+.
+- [x] **5.5 Tag `v1.0`** applied to the Phase 5 commit.
+- [ ] **5.6 Delete this file,** then archive the repo on GitHub. *Left as a separate commit.*
+
+**Found while screenshotting** (not in the original plan): the country dropdown was listing
+duplicates -- "Albania, Albania, Argentina, Argentina, Brazil, Brazil, Brazil, Brazil". This was
+not the Phase 3 de-duplication failing. The seed data itself held **50 country rows with only 27
+distinct names**, with "China" repeated across nine separate rows with different ids. `Distinct()`
+was correctly returning distinct *rows*; the data had duplicate *names*.
+
+Fixed in the data rather than the query, deliberately: de-duplicating by name in SQL would have
+hidden every room belonging to the other duplicate ids. `Countries.sql` now seeds 50 genuinely
+distinct countries, which keeps all 1-50 foreign-key references in `Addresses.sql` valid. Cities
+were already clean (100 of 100 distinct). Street names repeat across cities, which is realistic,
+so they were left alone.
+
+This is a good argument for taking screenshots earlier: the bug had been visible on the filter
+panel the whole time, and no test caught it because the tests assert behaviour, not data quality.
+
+---
+
+## After archiving
+
+If you ever return to this repository, the workflow still triggers on the `cleanup` branch; drop
+that from `.github/workflows/build.yml` once this work merges to `master`. Note also that GitHub
+Actions do not run on archived repositories, so the build badge freezes at its last result.
 
 ---
 
