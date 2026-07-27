@@ -43,14 +43,14 @@ namespace QwestRooms.UI.Controllers
         {
             int pageSize = 27;
             var listrooms = roomsService.GetRooms();
-            //PageViewModel pageViewModel = new PageViewModel(listrooms.Count, page, pageSize);
-            //IndexViewModel viewModel = new IndexViewModel
-            //{
-            //    PageViewModel = pageViewModel,
-            //    Rooms = listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList()
-            //};
+            IndexViewModel viewModel = new IndexViewModel
+            {
+                PageViewModel = new PageViewModel(listrooms.Count, page, pageSize),
+                Rooms = listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList(),
+                Adresses = adressesService.GetAdresses()
+            };
 
-            return PartialView("RoomsCollectionView", listrooms.Skip((page - 1) * pageSize).Take(pageSize).ToList());
+            return PartialView("RoomsCollectionView", viewModel);
         }
 
         public /*ActionResult*/ List<CountryVievModel> GetAllCountry()
@@ -155,7 +155,7 @@ namespace QwestRooms.UI.Controllers
                             Rooms = listFiltredRooms.Skip((1 - 1) * pageSize).Take(pageSize).ToList(),
                             Adresses = listadresses
                         };
-                        return PartialView("RoomsCollectionView", listFiltredRooms);
+                        return PartialView("RoomsCollectionView", viewModel);
                     }
                     else
                     {
@@ -173,7 +173,7 @@ namespace QwestRooms.UI.Controllers
                             Rooms = listFiltredRooms.Skip((1 - 1) * pageSize).Take(pageSize).ToList(),
                             Adresses = listadresses
                         };
-                        return PartialView("RoomsCollectionView", listFiltredRooms);
+                        return PartialView("RoomsCollectionView", viewModel);
                     }
 
                 }
@@ -193,11 +193,13 @@ namespace QwestRooms.UI.Controllers
                         Rooms = listFiltredRooms.Skip((1 - 1) * pageSize).Take(pageSize).ToList(),
                         Adresses = listadresses
                     };
-                    return PartialView("RoomsCollectionView", listFiltredRooms);
+                    return PartialView("RoomsCollectionView", viewModel);
                 }
             }
-            return null;
 
+            // No country selected yet: fall back to the unfiltered first page rather than
+            // returning null, which produced an empty response and a blank results panel.
+            return GetRoomsByPage(1);
         }
 
 

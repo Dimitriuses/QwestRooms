@@ -39,11 +39,10 @@ namespace QwestRooms.UI.Controllers
             }
         }
 
-        public AcountController()
-        {
-            manager = HttpContext.GetOwinContext().GetUserManager<AppUserManager>();
-            //AuthManager = HttpContext.GetOwinContext().Authentication;
-        }
+        // No constructor: Controller.HttpContext is still null while the controller is being
+        // constructed, so resolving the OWIN context here threw a NullReferenceException on
+        // every request. The lazy `manager` property above resolves it per request instead.
+
         // GET: Acount
         public ActionResult Index()
         {

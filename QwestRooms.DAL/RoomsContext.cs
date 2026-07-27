@@ -9,10 +9,16 @@ namespace QwestRooms.DAL
 
     public class RoomsContext : IdentityDbContext<AppUser>
     {
+        // Registered in a static constructor so it runs once per AppDomain, rather than on every
+        // context instantiation as it would in the instance constructor.
+        static RoomsContext()
+        {
+            Database.SetInitializer(new RoomsDbInitializer());
+        }
+
         public RoomsContext()
             : base("name=RoomsContext")
         {
-            //Database.SetInitializer(new DBinicialaiser());
         }
 
         public DbSet<Adress> Adresses { get; set; }
