@@ -186,16 +186,39 @@ this up and rebuilt automatically on first request -- verified, including that t
 
 ---
 
-## Phase 4 - Evidence that you test and automate
+## Phase 4 - Evidence that you test and automate -- COMPLETE
 
-Small but disproportionately persuasive. Two or three real tests beat an empty test project.
+**Verified 2026-07-27:** 34 tests, all passing in both Debug and Release. The CI command sequence
+was run locally end to end (Release build -> vstest -> .trx artifact) so the workflow is not
+guesswork.
 
-- [ ] **4.1 Add a test project** (xUnit or NUnit + Moq) covering the logic worth trusting:
-      `PageViewModel` boundary arithmetic - which had a real off-by-one that shipped - and the
-      Phase 3.3 filter service against a mocked repository.
-- [ ] **4.2 Add GitHub Actions CI** - `windows-latest`, `nuget restore`, `msbuild`, `vstest`, with
-      the build badge in the README. This is what makes the repo look maintained rather than
-      abandoned.
+- [x] **4.1 Added `QwestRooms.Tests`** (xUnit + Moq, SDK-style project targeting net48, so it uses
+      PackageReference while the older projects keep packages.config -- `nuget restore` handles
+      both). 34 tests across three fixtures:
+      - `PageViewModelTests` - the boundary arithmetic that shipped broken. The page-number loop
+        was `i < TotalPages`, so the last page was unreachable.
+      - `RoomsServiceTests` - filtering by country, by city, the rule that a specific address
+        outranks both, that `TotalCount` counts all matches rather than the current page, page
+        clamping, and that the projection maps the renamed columns and nested address correctly.
+      - `AddressesServiceTests` - that countries and cities are each offered once, which is the
+        de-duplication the original code got wrong.
+
+      The service tests run the **real projection expressions** over an in-memory `IQueryable`, so
+      the mapping is exercised, not just the filter.
+
+      **These tests were mutation-checked.** Reintroducing the original bugs -- changing the pager
+      `Ceiling` back to `Floor`, and removing the city `Distinct()` -- made 4 and 1 tests fail
+      respectively, with the city test reporting exactly the historical symptom (3 cities offered
+      instead of 2). Both mutations were reverted and the suite is green. A test suite that has
+      never been seen to fail is not evidence of anything.
+- [x] **4.2 Added GitHub Actions CI** (`.github/workflows/build.yml`) - `windows-latest`,
+      `nuget restore`, `msbuild /p:Configuration=Release`, then `vstest.console.exe` located via
+      `vswhere`, with NuGet package caching and the `.trx` results uploaded as an artifact.
+
+**Still to do in Phase 5:** the build badge, which needs the README that does not exist yet:
+`![build](https://github.com/Dimitriuses/QwestRooms/actions/workflows/build.yml/badge.svg)`.
+The workflow also triggers on the `cleanup` branch; drop that from the trigger list once this work
+merges to `master`.
 
 ---
 
