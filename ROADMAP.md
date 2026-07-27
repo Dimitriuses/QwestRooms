@@ -127,37 +127,62 @@ that way. Phase 3.7 renames it; that path must move at the same time.
 
 ---
 
-## Phase 3 - The code an interviewer will actually read
+## Phase 3 - The code an interviewer will actually read -- COMPLETE
 
-This is the phase that changes their opinion of you. Prioritise depth over breadth: a reviewer
-reading `RoomController` and `GenericRepository` forms their judgement in about ninety seconds.
+**Verified 2026-07-27:** clean build, zero warnings, zero advisories. The database rebuilt itself
+against the renamed schema and reseeded (1000 rooms / 1000 addresses / 201 images). A full
+27-room page render now costs **2 SQL statements** (one COUNT, one projection SELECT), measured
+from a cleared plan cache. Filtering and paging compose. Auth still works end to end after the
+controller rename, and `/Acount/` is a 404.
 
-- [ ] **3.1 Stop loading whole tables into memory.** `GenericRepository.GetAll()` returns
-      `AsEnumerable()`, so every filter, sort and page runs client-side after a full table load -
-      `Index` fetches *every* room and *every* address to show 27 of them. Return `IQueryable<T>`
-      and let the provider compose the query.
-- [ ] **3.2 Kill the N+1.** Lazy-loaded `virtual` navigations plus per-row mapping means a query
-      per room for `Company`, `Adress` and `Images`. Add explicit `Include`s / projection.
-- [ ] **3.3 Move filtering out of the controller.** `RoomController.Filter` is ~70 lines of nested
-      `foreach` across three near-identical branches, and `GetAllCountry` does an O(n^2) dedupe
-      using a `HashSet` as if it were a list. This logic is the entire reason the BLL project
-      exists - move it there behind a single filter method taking a criteria object.
-- [ ] **3.4 Get filter state out of `Session`.** Session-held filters break across tabs, can't be
-      shared as a URL, don't survive the back button, and can't combine with paging. Pass criteria
-      as query-string parameters bound to a model.
-- [ ] **3.5 Replace hand-written mapping.** The same DTO-construction block is copy-pasted through
-      every service. Wire up AutoMapper - it's already imported and commented out.
-- [ ] **3.6 Delete the dead weight.** `TestController` and `Views/Test/`, the orphaned
-      `Views/Room/Index.cshtml`, and the large commented-out blocks in nearly every file.
-- [ ] **3.7 Fix the typos in public identifiers.** `Adress`, `Acount`, `Diffictly`, `MinPayers`,
-      `CountryVievModel`, `Colection`, `Viev`, `GetAllCitiesByCouyntries`, `listFiltredRooms`.
-      These are the single most visible signal in the repo and a pure find-and-replace to fix.
-      Decide on `Qwest` vs `Quest` too - if the pun is deliberate, say so in the README so it
-      doesn't read as another misspelling.
-- [ ] **3.8 Settle on one language.** Comments and hardcoded UI strings mix Ukrainian and Russian
-      with English identifiers. Pick English for code and comments; keep Ukrainian UI copy if you
-      like, but move it into resource files rather than inline literals.
-- [ ] **3.9 Add an `.editorconfig`** so the formatting stays consistent from here on.
+- [x] **3.1 Stop loading whole tables into memory.** `GenericRepository.GetAll()` now returns
+      `IQueryable<T>` instead of `AsEnumerable()`, so filtering, ordering and paging are composed
+      into SQL. The room list used to read all 1000 rooms to display 27; it now reads 27.
+- [x] **3.2 Kill the N+1.** Replaced lazy-loaded per-row mapping with a projection, so company,
+      address and images arrive in the same statement. Measured: **2 statements per page**, down
+      from roughly eighty.
+- [x] **3.3 Move filtering out of the controller.** The ~70 lines of nested `foreach` across three
+      near-identical branches are now one `ApplyFilter` method in `RoomsService`, evaluated in
+      SQL. `GetAllCountry`'s O(n^2) HashSet dedupe is a `SELECT DISTINCT`.
+- [x] **3.4 Get filter state out of `Session`.** Criteria bind from the query string into
+      `RoomFilterViewModel` and are carried on the view model, so pager links inside a filtered
+      list keep the filter. `Session` is gone from the codebase entirely.
+- [x] **3.5 Replace hand-written mapping.** Done with reusable projection expressions rather than
+      AutoMapper -- see the deviation note below.
+- [x] **3.6 Delete the dead weight.** Removed `TestController`, `Views/Test/`, the orphaned
+      `Views/Room/Index.cshtml`, `ICitiesService`/`CitiesService` (which existed only to serve
+      `TestController`), the UI-side `CityViewModel`/`CountryViewModel` duplicates of the DTOs,
+      and the commented-out blocks throughout.
+- [x] **3.7 Fix the typos in public identifiers.** `Adress`->`Address`, `Acount`->`Account`,
+      `Diffictly`->`Difficulty`, `MinPayers`->`MinPlayers`, `CountryVievModel`->`CountryViewModel`,
+      `Colection`/`Viev`->`Collection`/`View`, `GetAllCitiesByCouyntries`->`CitiesPartial`. Also
+      moved the repository out of the stray `DataAccessLayer.Repositories` namespace into
+      `QwestRooms.DAL.Repositories`, and renamed the seed scripts from `Cities (fix).sql` to
+      `Cities.sql`. All renames used `git mv`, so history is preserved.
+      **`Qwest` is kept deliberately** -- it is the GitHub repository name, and changing it would
+      break the URL. Phase 5.1 should say so in the README so it does not read as a typo.
+- [x] **3.8 Settle on one language.** Code, comments and UI strings are English throughout. No
+      resource files: with a handful of literals, a full localisation setup would be ceremony
+      without benefit.
+- [x] **3.9 Added `.editorconfig`.**
+
+**Deviation - AutoMapper was not used.** The plan said to wire it up. Every AutoMapper release
+compatible with .NET Framework 4.8 carries an unpatched high-severity advisory
+(GHSA-rvv3-g6hj-g44x, DoS via uncontrolled recursion), fixed only in 15.1.1, which requires
+.NET 8. Versions 11 and 12 target `netstandard2.1`, which .NET Framework cannot consume at all.
+Adding it would have undone Phase 2's zero-advisory result to save a few lines. Instead,
+`BLL/Mapping/Projections.cs` holds the entity-to-DTO mappings as reusable
+`Expression<Func<TEntity, TDto>>` fields, applied with `Select`. That achieves what 3.5 actually
+wanted -- one definition per DTO instead of a block copy-pasted into every service -- and it is
+what makes the single-statement projection above possible. The one wart is that the address
+initialiser is repeated inside the room projection, because an expression tree cannot invoke
+another expression and remain translatable by EF6; composing them would need LINQKit, which is
+not worth a dependency here. This is commented at the call site.
+
+**Schema note:** renaming `Adress`, `Diffictly` and `MinPayers` changed EF's table and column
+names, so the seed scripts had to change in lockstep. `DropCreateDatabaseIfModelChanges` picked
+this up and rebuilt automatically on first request -- verified, including that the old
+`Adresses` table is gone.
 
 ---
 

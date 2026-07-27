@@ -1,14 +1,15 @@
-﻿using QwestRoom.BLL.DTOModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using QwestRoom.BLL.DTOModels;
+using QwestRoom.BLL.Filtering;
 
 namespace QwestRoom.BLL.Services.Abstraction
 {
     public interface IRoomsService
     {
-        ICollection<RoomDTO> GetRooms();
+        /// <summary>
+        /// Returns a single page of rooms matching <paramref name="filter"/>, together with the
+        /// total number of matches. Filtering and paging are applied in the database, not in
+        /// memory.
+        /// </summary>
+        PagedResult<RoomDTO> GetRooms(RoomFilter filter, int pageNumber, int pageSize);
     }
 }

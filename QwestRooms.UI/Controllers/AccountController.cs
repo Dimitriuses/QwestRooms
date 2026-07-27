@@ -11,7 +11,7 @@ using System.Web.Mvc;
 namespace QwestRooms.UI.Controllers
 {
     [Authorize]
-    public class AcountController : Controller
+    public class AccountController : Controller
     {
         private AppUserManager _userManager;
 

@@ -1,83 +1,178 @@
-﻿@using QwestRooms.UI.Models
+@using QwestRooms.UI.Models
 
-@model IndexViewModel
+@model RoomCatalogViewModel
 
 @{
-    ViewBag.Title = "Page";
+    ViewBag.Title = "Rooms";
 }
 
+<style>
+    .flip-card {
+        perspective: 1000px;
+    }
 
-<a class="btn btn-primary" data-toggle="collapse" href="#Filter" role="button" aria-expanded="false" aria-controls="Filter">Filters</a>
-<div class="collapse multi-collapse" id="Filter">
+    .flip-card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        transition: transform 0.8s;
+        transform-style: preserve-3d;
+    }
+
+    .flip-card:hover .flip-card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+    }
+
+    .flip-card-front {
+        background-color: #bbb;
+        color: black;
+    }
+
+    .flip-card-back {
+        background-color: dodgerblue;
+        color: white;
+        transform: rotateY(180deg);
+    }
+
+    .dropdown-scroll {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+</style>
+
+<a class="btn btn-primary mb-2" data-toggle="collapse" href="#filterPanel" role="button"
+   aria-expanded="false" aria-controls="filterPanel">Filters</a>
+
+<div class="collapse mb-3" id="filterPanel">
     <div class="card card-body">
-        <div class="row">
-            <div class="col border border-success">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox"><span class="checkbox-decorator"><span class="check"></span></span> Adress
-                    </label>
-                </div>
+        <div class="form-row align-items-end">
+            <div class="col-auto">
+                <label class="d-block">Country</label>
                 <div class="dropdown">
-                    @*@Ajax.ActionLink("Country", "GetAllCountry", new AjaxOptions { UpdateTargetId = "Countries" }@*, new {@class = "btn btn-secondary dropdown-toggle", @type = "button", @id = "dropdownMenu2" *@
-                    <label>Country</label>
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuCountry" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Не вказано
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="countryButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Any
                     </button>
-                    <div id="Countries" class="dropdown-menu" aria-labelledby="dropdownMenu2" style=" overflow:auto; height:300px">
-                        @{
-                            Html.RenderPartial("CountryColectionViev", ViewData["CountriData"]);
-                        }
-                    </div>
-                </div>
-                <script>
-                    $('.country').click(function () {
-                        console.log($(this).attr('id') + $(this).text());
-                        $('#dropdownMenuCountry').text($(this).text());
-                        $('#dropdownMenuCities').text("Не Вказано");
-                        $('#dropdownMenuHome').text("Не Вказано");
-                    });
-                </script>
-                <div class="dropdown">
-                    <label>City</label>
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuCities" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Не вказано
-                    </button>
-                    <div id="Cities" class="dropdown-menu" aria-labelledby="dropdownMenu2" style=" overflow:auto; height:300px">
-
-                    </div>
-                </div>
-                <div class="dropdown">
-                    <label>Home</label>
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuHome" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Не вказано
-                    </button>
-                    <div id="Homes" class="dropdown-menu" aria-labelledby="dropdownMenu2">
-
+                    <div id="countryMenu" class="dropdown-menu dropdown-scroll" aria-labelledby="countryButton">
+                        @Html.Partial("CountryCollectionView", Model.Countries)
                     </div>
                 </div>
             </div>
-            <div class="col">
 
+            <div class="col-auto">
+                <label class="d-block">City</label>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="cityButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                        Any
+                    </button>
+                    <div id="cityMenu" class="dropdown-menu dropdown-scroll" aria-labelledby="cityButton"></div>
+                </div>
             </div>
-            @*<button id="filterbtn" class="btn btn-primary"></button>*@
-            <script>
-                $('#filterbtn').click(function () {
-                    //console.log('@ViewBag.CountryId');
-                    //console.log("CountryId = " + '@Session["CountryId"]' + " || CityId = " + '@Session["CityId"]' + " || HomeId = " + '@Session["HomeId"]');
-                })
-            </script>
+
+            <div class="col-auto">
+                <label class="d-block">Address</label>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="addressButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                        Any
+                    </button>
+                    <div id="addressMenu" class="dropdown-menu dropdown-scroll" aria-labelledby="addressButton"></div>
+                </div>
+            </div>
+
+            <div class="col-auto">
+                <button type="button" id="applyFilter" class="btn btn-primary">Apply</button>
+                <button type="button" id="clearFilter" class="btn btn-outline-secondary">Clear</button>
+            </div>
         </div>
-        @Ajax.ActionLink("Filter", "Filter",  new AjaxOptions { UpdateTargetId = "rooms" });
     </div>
 </div>
-<div id="result">
 
-    <div id="rooms">
-
-      @{ 
-          Html.RenderPartial("RoomsCollectionView", Model);
-      }
-    </div>
-    
+<div id="rooms">
+    @Html.Partial("RoomsCollectionView", Model.List)
 </div>
 
+<script>
+    (function () {
+        // The selected criteria live here rather than in Session, so two browser tabs can hold
+        // different filters and every request carries its own state.
+        var filter = { countryId: null, cityId: null, addressId: null };
+
+        var urls = {
+            rooms: '@Url.Action("RoomsPartial", "Room")',
+            cities: '@Url.Action("CitiesPartial", "Room")',
+            addresses: '@Url.Action("AddressesPartial", "Room")'
+        };
+
+        function loadRooms(page) {
+            $.get(urls.rooms, {
+                page: page || 1,
+                countryId: filter.countryId,
+                cityId: filter.cityId,
+                addressId: filter.addressId
+            }, function (html) {
+                $('#rooms').html(html);
+            });
+        }
+
+        function reset(which, label) {
+            filter[which + 'Id'] = null;
+            $('#' + which + 'Button').text(label).prop('disabled', which !== 'country');
+            $('#' + which + 'Menu').empty();
+        }
+
+        $('#countryMenu').on('click', '.js-country', function () {
+            filter.countryId = $(this).data('id');
+            $('#countryButton').text($(this).text().trim());
+            reset('city', 'Any');
+            reset('address', 'Any');
+            $.get(urls.cities, { countryId: filter.countryId }, function (html) {
+                $('#cityMenu').html(html);
+                $('#cityButton').prop('disabled', false);
+            });
+        });
+
+        $('#cityMenu').on('click', '.js-city', function () {
+            filter.cityId = $(this).data('id');
+            $('#cityButton').text($(this).text().trim());
+            reset('address', 'Any');
+            $.get(urls.addresses, { countryId: filter.countryId, cityId: filter.cityId }, function (html) {
+                $('#addressMenu').html(html);
+                $('#addressButton').prop('disabled', false);
+            });
+        });
+
+        $('#addressMenu').on('click', '.js-address', function () {
+            filter.addressId = $(this).data('id');
+            $('#addressButton').text($(this).text().trim());
+        });
+
+        $('#applyFilter').on('click', function () {
+            loadRooms(1);
+        });
+
+        $('#clearFilter').on('click', function () {
+            filter = { countryId: null, cityId: null, addressId: null };
+            $('#countryButton').text('Any');
+            reset('city', 'Any');
+            reset('address', 'Any');
+            loadRooms(1);
+        });
+
+        // The pager is re-rendered with each page of results, so bind by delegation.
+        $('#rooms').on('click', '.js-page-link', function (e) {
+            e.preventDefault();
+            $.get(this.href, function (html) {
+                $('#rooms').html(html);
+            });
+        });
+    })();
+</script>

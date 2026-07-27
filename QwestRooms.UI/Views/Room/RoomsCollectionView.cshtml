@@ -1,81 +1,70 @@
-﻿@using QwestRooms.UI.Models
+@using QwestRooms.UI.Models
 
-@model IndexViewModel
-@*@model List<QwestRoom.BLL.DTOModels.RoomDTO>*@
-<style>
-    .flip-card {
-        perspective: 1000px;
-    }
+@model RoomListViewModel
 
-    .flip-card-inner {
-        position: relative;
-        width: 100%;
-        height: 100%;
-        /*text-align: center;*/
-        transition: transform 0.8s;
-        transform-style: preserve-3d;
+@* Every pager link carries the current filter, so paging inside a filtered list keeps the
+   filter applied. *@
+@functions {
+    object PageLinkRoute(RoomListViewModel model, int page)
+    {
+        return new
+        {
+            page = page,
+            countryId = model.Filter.CountryId,
+            cityId = model.Filter.CityId,
+            addressId = model.Filter.AddressId
+        };
     }
+}
 
-    .flip-card:hover .flip-card-inner {
-        transform: rotateY(180deg);
-    }
-
-    .flip-card-front, .flip-card-back {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        backface-visibility: hidden;
-    }
-
-    .flip-card-front {
-        background-color: #bbb;
-        color: black;
-    }
-
-    .flip-card-back {
-        background-color: dodgerblue;
-        color: white;
-        transform: rotateY(180deg);
-    }
-</style>
+@if (Model.Rooms.Count == 0)
+{
+    <p class="lead text-muted">No rooms match this filter.</p>
+}
 
 @foreach (var item in Model.Rooms)
 {
     <div class="card flip-card" style="width: 18rem; height: 36rem; float: left; margin: 5px;">
         <div class="flip-card-inner">
             <div class="flip-card-front" style="background-color:white;">
-                <img style="width: 18rem; height: 18rem;" class="card-img-top border border-primary" src="@Html.DisplayFor(modelItem => item.LogoPath)" alt="Card image cap">
+                <img class="card-img-top border border-primary room-logo"
+                     style="width: 18rem; height: 18rem; object-fit: cover;"
+                     src="@item.LogoPath" alt="@item.Name" />
                 <div class="card-body">
-                    <span class="badge badge-pill badge-success">@Html.DisplayFor(modelItem => item.Rating)</span>
-                    <span class="badge badge-pill badge-warning">@Html.DisplayFor(modelItem => item.FearLevel)</span>
-                    <span class="badge badge-pill badge-danger">@Html.DisplayFor(modelItem => item.Diffictly)</span>
-                    <h5 style="height: 3.6rem; overflow: hidden; text-overflow: ellipsis;" class="card-title">@Html.DisplayFor(modelItem => item.Name)</h5>
-                    <p style="height: 8rem; overflow: hidden; text-overflow: ellipsis;" class="card-text"> @Html.DisplayFor(modelItem => item.Description)</p>
+                    <span class="badge badge-pill badge-success" title="Rating">@item.Rating</span>
+                    <span class="badge badge-pill badge-warning" title="Fear level">@item.FearLevel</span>
+                    <span class="badge badge-pill badge-danger" title="Difficulty">@item.Difficulty</span>
+                    <h5 style="height: 3.6rem; overflow: hidden; text-overflow: ellipsis;" class="card-title">@item.Name</h5>
+                    <p style="height: 8rem; overflow: hidden; text-overflow: ellipsis;" class="card-text">@item.Description</p>
                 </div>
             </div>
             <div class="flip-card-back" style="background-color:black; color:white">
-                <img style="width: 18rem; height: 18rem;" class="card-img-top border border-primary" src="@Html.DisplayFor(modelItem => item.LogoPath)" alt="Card image cap">
+                <img class="card-img-top border border-primary room-logo"
+                     style="width: 18rem; height: 18rem; object-fit: cover;"
+                     src="@item.LogoPath" alt="@item.Name" />
                 <div class="card-body">
-                    <span class="badge badge-pill badge-success">@Html.DisplayFor(modelItem => item.Rating)</span>
-                    <span class="badge badge-pill badge-warning">@Html.DisplayFor(modelItem => item.FearLevel)</span>
-                    <span class="badge badge-pill badge-danger">@Html.DisplayFor(modelItem => item.Diffictly)</span>
-                    <h5 style="height: 3.6rem; overflow: hidden; text-overflow: ellipsis;" class="card-title">Phone: @Html.DisplayFor(modelItem => item.Phone)</h5>
-                    <h5 style="height: 7.5rem; overflow: hidden; text-overflow: ellipsis;" class="card-text">Email: @Html.DisplayFor(modelItem => item.Email)</h5>
-                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                    <p class="card-text">@item.MinPlayers&ndash;@item.MaxPlayers players</p>
+                    <p class="card-text">@item.TimeToPass.TotalMinutes.ToString("0") minutes</p>
+                    <p class="card-text">@item.Company.Name</p>
+                    <p class="card-text">
+                        @item.Address.Street.Name @item.Address.HouseNumber,
+                        @item.Address.City.Name, @item.Address.Country.Name
+                    </p>
+                    <p class="card-text">@item.Phone</p>
+                    <p class="card-text">@item.Email</p>
                 </div>
             </div>
         </div>
     </div>
 }
+
 <nav style="clear:left" aria-label="Room list pages">
     <ul class="pagination justify-content-center flex-wrap">
-        @if (Model.PageViewModel.HasPreviousPage)
+        @if (Model.Page.HasPreviousPage)
         {
             <li class="page-item">
-                @Ajax.ActionLink("«", "GetRoomsByPage",
-                    new { page = Model.PageViewModel.PageNumber - 1 },
-                    new AjaxOptions { UpdateTargetId = "rooms" },
-                    new { @class = "page-link", aria_label = "Previous page" })
+                @Html.ActionLink("«", "RoomsPartial", PageLinkRoute(Model, Model.Page.PageNumber - 1),
+                    new { @class = "page-link js-page-link", aria_label = "Previous page" })
             </li>
         }
         else
@@ -83,30 +72,26 @@
             <li class="page-item disabled"><span class="page-link">«</span></li>
         }
 
-        @for (int i = 1; i <= Model.PageViewModel.TotalPages; i++)
+        @for (int i = 1; i <= Model.Page.TotalPages; i++)
         {
-            if (i == Model.PageViewModel.PageNumber)
+            if (i == Model.Page.PageNumber)
             {
                 <li class="page-item active"><span class="page-link">@i</span></li>
             }
             else
             {
                 <li class="page-item">
-                    @Ajax.ActionLink(i.ToString(), "GetRoomsByPage",
-                        new { page = i },
-                        new AjaxOptions { UpdateTargetId = "rooms" },
-                        new { @class = "page-link" })
+                    @Html.ActionLink(i.ToString(), "RoomsPartial", PageLinkRoute(Model, i),
+                        new { @class = "page-link js-page-link" })
                 </li>
             }
         }
 
-        @if (Model.PageViewModel.HasNextPage)
+        @if (Model.Page.HasNextPage)
         {
             <li class="page-item">
-                @Ajax.ActionLink("»", "GetRoomsByPage",
-                    new { page = Model.PageViewModel.PageNumber + 1 },
-                    new AjaxOptions { UpdateTargetId = "rooms" },
-                    new { @class = "page-link", aria_label = "Next page" })
+                @Html.ActionLink("»", "RoomsPartial", PageLinkRoute(Model, Model.Page.PageNumber + 1),
+                    new { @class = "page-link js-page-link", aria_label = "Next page" })
             </li>
         }
         else

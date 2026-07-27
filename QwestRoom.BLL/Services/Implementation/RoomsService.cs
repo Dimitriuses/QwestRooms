@@ -1,90 +1,79 @@
-﻿using DataAccessLayer.Repositories;
 using QwestRoom.BLL.DTOModels;
+using QwestRoom.BLL.Filtering;
+using QwestRoom.BLL.Mapping;
 using QwestRoom.BLL.Services.Abstraction;
 using QwestRooms.DAL.Models;
-using System;
-using System.Collections.Generic;
+using QwestRooms.DAL.Repositories;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QwestRoom.BLL.Services.Implementation
 {
-    public class RoomsService: IRoomsService
+    public class RoomsService : IRoomsService
     {
-        private readonly IGenericRepository<Room> roomRepos;
+        private readonly IGenericRepository<Room> roomRepository;
 
-        //private readonly IMapper mapper;
-
-        public RoomsService(IGenericRepository<Room> _roomRepos)//, IMapper _mapper)
+        public RoomsService(IGenericRepository<Room> _roomRepository)
         {
-            roomRepos = _roomRepos;
-            //mapper = _mapper;
+            roomRepository = _roomRepository;
         }
 
-        public ICollection<RoomDTO> GetRooms()
+        public PagedResult<RoomDTO> GetRooms(RoomFilter filter, int pageNumber, int pageSize)
         {
-            var rooms = roomRepos.GetAll().ToList();
-            List<RoomDTO> roomDTOs = new List<RoomDTO>();
-            foreach (var item in rooms)
+            if (pageNumber < 1)
             {
-                List<ImageDTO> imageDTOs = new List<ImageDTO>();
-                foreach (var item1 in item.Images)
-                {
-                    imageDTOs.Add(new ImageDTO
-                    {
-                        Id = item1.Id,
-                        Path = item1.Path
-                    });
-                }
-                roomDTOs.Add(new RoomDTO
-                {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Description = item.Description,
-                    TimeToPass = item.TimeToPass,
-                    MinPayers = item.MinPayers,
-                    MaxPlayers = item.MaxPlayers,
-                    Phone = item.Phone,
-                    Email = item.Email,
-                    Rating = item.Rating,
-                    FearLevel = item.FearLevel,
-                    Diffictly = item.Diffictly,
-                    LogoPath = item.LogoPath,
-                    Company = new CompanyDTO
-                    {
-                        Id = item.Company.Id,
-                        Name = item.Company.Name
-                    },
-                    Adress = new AdressDTO
-                    {
-                        Id = item.Adress.Id,
-                        HouseNumber = item.Adress.HouseNumber,
-                        Country = new CountryDTO
-                        {
-                            Id = item.Adress.Country.Id,
-                            Name = item.Adress.Country.Name
-                        },
-                        City = new CityDTO
-                        {
-                            Id = item.Adress.City.Id,
-                            Name = item.Adress.City.Name
-                        },
-                        Street = new StreetDTO
-                        {
-                            Id = item.Adress.Street.Id,
-                            Name = item.Adress.Street.Name
-                        }
-                    },
-                    Images = imageDTOs
-                });
+                pageNumber = 1;
             }
 
-            return roomDTOs;
+            if (pageSize < 1)
+            {
+                pageSize = 1;
+            }
 
-            //return //mapper.Map<List<Room>, ICollection<RoomDTO>>(rooms);
+            var query = ApplyFilter(roomRepository.GetAll(), filter);
 
+            // Counted in the database. The old controller pulled every room into memory and
+            // called .Count on the resulting list.
+            var totalCount = query.Count();
 
+            // Skip requires a deterministic order, so order before paging.
+            var items = query
+                .OrderBy(room => room.Id)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(Projections.ToRoomDTO)
+                .ToList();
+
+            return new PagedResult<RoomDTO>(items, totalCount, pageNumber, pageSize);
+        }
+
+        /// <summary>
+        /// A specific address is the narrowest choice, so it wins outright; otherwise country and
+        /// city narrow independently. This is the same intent as the previous three near-identical
+        /// nested-loop branches in the controller, expressed once and evaluated in SQL.
+        /// </summary>
+        private static IQueryable<Room> ApplyFilter(IQueryable<Room> query, RoomFilter filter)
+        {
+            if (filter == null)
+            {
+                return query;
+            }
+
+            if (filter.AddressId.HasValue)
+            {
+                return query.Where(room => room.Address.Id == filter.AddressId.Value);
+            }
+
+            if (filter.CountryId.HasValue)
+            {
+                query = query.Where(room => room.Address.Country.Id == filter.CountryId.Value);
+            }
+
+            if (filter.CityId.HasValue)
+            {
+                query = query.Where(room => room.Address.City.Id == filter.CityId.Value);
+            }
+
+            return query;
         }
     }
 }

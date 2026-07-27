@@ -1,0 +1,8 @@
+@using QwestRoom.BLL.DTOModels
+
+@model IReadOnlyList<CountryDTO>
+
+@foreach (var item in Model)
+{
+    <button type="button" class="dropdown-item js-country" data-id="@item.Id">@item.Name</button>
+}

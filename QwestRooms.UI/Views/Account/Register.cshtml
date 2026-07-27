@@ -8,7 +8,7 @@
     <div class="col-md-5">
         <h2>Create an account</h2>
 
-        @using (Html.BeginForm("Register", "Acount", FormMethod.Post))
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post))
         {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
@@ -36,7 +36,7 @@
             </div>
 
             <button type="submit" class="btn btn-primary">Register</button>
-            @Html.ActionLink("Log in instead", "Login", "Acount", null, new { @class = "btn btn-link" })
+            @Html.ActionLink("Log in instead", "Login", "Account", null, new { @class = "btn btn-link" })
         }
     </div>
 </div>

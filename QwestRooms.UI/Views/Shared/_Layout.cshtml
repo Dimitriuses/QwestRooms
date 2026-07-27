@@ -35,7 +35,7 @@
                             <span class="navbar-text mr-2">@User.Identity.Name</span>
                         </li>
                         <li class="nav-item">
-                            @using (Html.BeginForm("Logout", "Acount", FormMethod.Post, new { @class = "form-inline" }))
+                            @using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { @class = "form-inline" }))
                             {
                                 @Html.AntiForgeryToken()
                                 <button type="submit" class="btn btn-link nav-link">Log out</button>
@@ -45,10 +45,10 @@
                     else
                     {
                         <li class="nav-item">
-                            @Html.ActionLink("Log in", "Login", "Acount", null, new { @class = "nav-link" })
+                            @Html.ActionLink("Log in", "Login", "Account", null, new { @class = "nav-link" })
                         </li>
                         <li class="nav-item">
-                            @Html.ActionLink("Register", "Register", "Acount", null, new { @class = "nav-link" })
+                            @Html.ActionLink("Register", "Register", "Account", null, new { @class = "nav-link" })
                         </li>
                     }
                 </ul>

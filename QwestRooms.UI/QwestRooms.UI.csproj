@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.0\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -173,15 +173,14 @@
     <Compile Include="App_Start\AppUserManager.cs" />
     <Compile Include="App_Start\AutofacConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\AcountController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\RoomController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\CityViewModel.cs" />
-    <Compile Include="Models\CountryVievModel.cs" />
-    <Compile Include="Models\IndexViewModel.cs" />
+    <Compile Include="Models\RoomCatalogViewModel.cs" />
+    <Compile Include="Models\RoomFilterViewModel.cs" />
+    <Compile Include="Models\RoomListViewModel.cs" />
     <Compile Include="Models\PageViewModel.cs" />
     <Compile Include="Models\UserLoginVM.cs" />
     <Compile Include="Models\UserRegisterVM.cs" />
@@ -193,15 +192,13 @@
     <None Include="packages.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Test\View.cshtml" />
-    <Content Include="Views\Room\Index.cshtml" />
     <Content Include="Views\Room\Page.cshtml" />
     <Content Include="Views\Room\RoomsCollectionView.cshtml" />
-    <Content Include="Views\Acount\Login.cshtml" />
-    <Content Include="Views\Acount\Register.cshtml" />
-    <Content Include="Views\Room\CountryColectionViev.cshtml" />
-    <Content Include="Views\Room\CitiesColectionView.cshtml" />
-    <Content Include="Views\Room\HomeColectionView.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Room\CountryCollectionView.cshtml" />
+    <Content Include="Views\Room\CitiesCollectionView.cshtml" />
+    <Content Include="Views\Room\AddressCollectionView.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

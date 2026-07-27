@@ -24,13 +24,13 @@ namespace QwestRooms.DAL.Configuration
         /// </summary>
         private static readonly string[] ScriptFiles =
         {
-            "Cities (fix).sql",
-            "Countries (fix).sql",
-            "Streets (fix).sql",
-            "Adresses(fix).sql",
-            "Companies (fix).sql",
-            "Rooms (fix).sql",
-            "Images (fix).sql"
+            "Cities.sql",
+            "Countries.sql",
+            "Streets.sql",
+            "Addresses.sql",
+            "Companies.sql",
+            "Rooms.sql",
+            "Images.sql"
         };
 
         protected override void Seed(RoomsContext context)

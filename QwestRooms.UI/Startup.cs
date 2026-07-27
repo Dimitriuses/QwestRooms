@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
@@ -20,10 +20,8 @@ namespace QwestRooms.UI
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                // Where an unauthenticated user gets sent. Note the controller really is spelled
-                // "Acount" -- correcting that typo is Phase 3.7, and this path has to match it
-                // until then.
-                LoginPath = new PathString("/Acount/Login")
+                // Where an unauthenticated user gets sent.
+                LoginPath = new PathString("/Account/Login")
             });
         }
 
