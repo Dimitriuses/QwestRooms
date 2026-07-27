@@ -362,3 +362,9 @@ API
 Training
 Blog
 About
+
+# Bootstrapped by tools/dev.ps1 when nuget.exe is not on PATH
+tools/nuget.exe
+
+# Working document for the 2026 cleanup - kept locally, not part of the repository
+ROADMAP.md

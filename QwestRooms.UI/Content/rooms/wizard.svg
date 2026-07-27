@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="WIZARD&#39;S STUDY">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1d1230"/>
+      <stop offset="100%" stop-color="#3b2560"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <rect x="26" y="26" width="548" height="548" fill="none" stroke="#d9b3ff" stroke-width="3" opacity="0.35"/>
+  <path d='M300 165 L322 235 L395 235 L336 278 L358 348 L300 305 L242 348 L264 278 L205 235 L278 235 Z' fill='none' stroke='#d9b3ff' stroke-width='9' stroke-linejoin='round'/>
+  <text x="300" y="486" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="600"
+        letter-spacing="5" fill="#d9b3ff" text-anchor="middle">WIZARD&#39;S STUDY</text>
+</svg>

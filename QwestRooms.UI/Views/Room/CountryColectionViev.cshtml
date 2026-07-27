@@ -1,7 +1,0 @@
-﻿@model List<QwestRooms.UI.Models.CountryVievModel>
-
-@foreach (var item in Model)
-{
-    @Ajax.ActionLink(item.Name, "GetAllCitiesByCouyntries", new { i = item.Id }, new AjaxOptions { UpdateTargetId = "Cities" }, new { @class = "dropdown-item country", @id = item.Id });
-    @*<input class="dropdown-item" type="button" value="@item.Name" ></input>*@
-}

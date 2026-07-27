@@ -1,0 +1,18 @@
+insert into Companies (Name) values ('Nebula Escape Company');
+insert into Companies (Name) values ('Cipher Quest Rooms');
+insert into Companies (Name) values ('Keyhole Adventure Rooms');
+insert into Companies (Name) values ('Blackbox Adventure Rooms');
+insert into Companies (Name) values ('Lantern Adventure Rooms');
+insert into Companies (Name) values ('Redstone Escape Company');
+insert into Companies (Name) values ('North Gate Escape Company');
+insert into Companies (Name) values ('Hourglass Quest Rooms');
+insert into Companies (Name) values ('Ironwood Quest Rooms');
+insert into Companies (Name) values ('Paper Lantern Adventure Rooms');
+insert into Companies (Name) values ('Copper Fox Escape Company');
+insert into Companies (Name) values ('Mind Vault Live Games');
+insert into Companies (Name) values ('Sealed Door Puzzle House');
+insert into Companies (Name) values ('Silver Compass Escape Company');
+insert into Companies (Name) values ('Thirteenth Hour Puzzle House');
+insert into Companies (Name) values ('Blue Room Escape Company');
+insert into Companies (Name) values ('Foxglove Quest Rooms');
+insert into Companies (Name) values ('Wayfarer Escape Rooms');

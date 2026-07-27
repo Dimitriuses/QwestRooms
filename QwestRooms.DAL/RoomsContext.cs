@@ -1,21 +1,25 @@
+using Microsoft.AspNet.Identity.EntityFramework;
+using QwestRooms.DAL.Configuration;
+using QwestRooms.DAL.Models;
+using System.Data.Entity;
+
 namespace QwestRooms.DAL
 {
-    using Microsoft.AspNet.Identity.EntityFramework;
-    using QwestRooms.DAL.Configuration;
-    using QwestRooms.DAL.Models;
-    using System;
-    using System.Data.Entity;
-    using System.Linq;
-
     public class RoomsContext : IdentityDbContext<AppUser>
     {
+        // Registered in a static constructor so it runs once per AppDomain, rather than on every
+        // context instantiation as it would in the instance constructor.
+        static RoomsContext()
+        {
+            Database.SetInitializer(new RoomsDbInitializer());
+        }
+
         public RoomsContext()
             : base("name=RoomsContext")
         {
-            //Database.SetInitializer(new DBinicialaiser());
         }
 
-        public DbSet<Adress> Adresses { get; set; }
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<Country> Countries { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Street> Streets { get; set; }
@@ -28,5 +32,4 @@ namespace QwestRooms.DAL
             return new RoomsContext();
         }
     }
-
 }

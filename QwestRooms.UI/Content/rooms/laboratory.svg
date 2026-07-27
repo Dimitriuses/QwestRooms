@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="LABORATORY">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0f2620"/>
+      <stop offset="100%" stop-color="#1d4a3c"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <rect x="26" y="26" width="548" height="548" fill="none" stroke="#7dffc4" stroke-width="3" opacity="0.35"/>
+  <path d='M270 170 L270 250 L215 350 Q210 365 228 365 L372 365 Q390 365 385 350 L330 250 L330 170 Z' fill='none' stroke='#7dffc4' stroke-width='10' stroke-linejoin='round'/><line x1='258' y1='170' x2='342' y2='170' stroke='#7dffc4' stroke-width='11' stroke-linecap='round'/><circle cx='285' cy='320' r='11' fill='#7dffc4'/><circle cx='320' cy='340' r='8' fill='#7dffc4'/>
+  <text x="300" y="486" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="600"
+        letter-spacing="5" fill="#7dffc4" text-anchor="middle">LABORATORY</text>
+</svg>

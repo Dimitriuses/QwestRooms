@@ -1,14 +1,10 @@
-﻿using Autofac;
+using Autofac;
 using Autofac.Integration.Mvc;
-using DataAccessLayer.Repositories;
-using QwestRoom.BLL.Services.Abstraction;
-using QwestRoom.BLL.Services.Implementation;
+using QwestRooms.BLL.Services.Abstraction;
+using QwestRooms.BLL.Services.Implementation;
 using QwestRooms.DAL;
-using System;
-using System.Collections.Generic;
+using QwestRooms.DAL.Repositories;
 using System.Data.Entity;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace QwestRooms.UI.App_Start
@@ -21,12 +17,12 @@ namespace QwestRooms.UI.App_Start
 
             builder.RegisterControllers(typeof(MvcApplication).Assembly);
 
-            builder.RegisterType<RoomsContext>().As<DbContext>();
+            // One context per request, so every repository injected into a single request's
+            // services shares it.
+            builder.RegisterType<RoomsContext>().As<DbContext>().InstancePerRequest();
             builder.RegisterGeneric(typeof(GenericRepository<>)).As(typeof(IGenericRepository<>));
-            builder.RegisterType<CitiesService>().As<ICitiesService>();
             builder.RegisterType<RoomsService>().As<IRoomsService>();
-            builder.RegisterType<AdressesService>().As<IAdressesService>();
-
+            builder.RegisterType<AddressesService>().As<IAddressesService>();
 
             DependencyResolver.SetResolver(new AutofacDependencyResolver(builder.Build()));
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
@@ -20,9 +20,8 @@ namespace QwestRooms.UI
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                //Если нет прав то редирект по ссылке
+                // Where an unauthenticated user gets sent.
                 LoginPath = new PathString("/Account/Login")
-
             });
         }
 

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="OUTBREAK">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#231212"/>
+      <stop offset="100%" stop-color="#4d2020"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <rect x="26" y="26" width="548" height="548" fill="none" stroke="#ff9d9d" stroke-width="3" opacity="0.35"/>
+  <circle cx='300' cy='265' r='30' fill='none' stroke='#ff9d9d' stroke-width='9'/><circle cx='300' cy='193' r='46' fill='none' stroke='#ff9d9d' stroke-width='9'/><circle cx='362' cy='301' r='46' fill='none' stroke='#ff9d9d' stroke-width='9'/><circle cx='238' cy='301' r='46' fill='none' stroke='#ff9d9d' stroke-width='9'/>
+  <text x="300" y="486" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="600"
+        letter-spacing="5" fill="#ff9d9d" text-anchor="middle">OUTBREAK</text>
+</svg>

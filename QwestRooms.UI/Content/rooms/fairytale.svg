@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600" role="img" aria-label="FAIRYTALE">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1b2436"/>
+      <stop offset="100%" stop-color="#31456b"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg)"/>
+  <rect x="26" y="26" width="548" height="548" fill="none" stroke="#ffd9e8" stroke-width="3" opacity="0.35"/>
+  <path d='M215 350 L215 235 L245 235 L245 205 L275 205 L275 235 L325 235 L325 205 L355 205 L355 235 L385 235 L385 350 Z' fill='none' stroke='#ffd9e8' stroke-width='10' stroke-linejoin='round'/><path d='M278 350 L278 292 Q300 268 322 292 L322 350 Z' fill='#ffd9e8' opacity='0.6'/>
+  <text x="300" y="486" font-family="Segoe UI, Arial, sans-serif" font-size="40" font-weight="600"
+        letter-spacing="5" fill="#ffd9e8" text-anchor="middle">FAIRYTALE</text>
+</svg>

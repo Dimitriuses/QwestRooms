@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+using System;
 using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 
-namespace DataAccessLayer.Repositories
+namespace QwestRooms.DAL.Repositories
 {
-    public class GenericRepository<TEntity>
-        : IGenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
     {
         private readonly DbContext context;
 
@@ -35,18 +32,19 @@ namespace DataAccessLayer.Repositories
             context.SaveChanges();
         }
 
-        public TEntity Find(int Id)
+        public TEntity Find(int id)
         {
-            return context.Set<TEntity>().Find(Id);
+            return context.Set<TEntity>().Find(id);
         }
 
-        public IEnumerable<TEntity> GetAll()
+        public IQueryable<TEntity> GetAll()
         {
-            return context.Set<TEntity>().AsEnumerable();
+            return context.Set<TEntity>();
         }
-        public IEnumerable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
+
+        public IQueryable<TEntity> GetAll(Expression<Func<TEntity, bool>> predicate)
         {
-            return context.Set<TEntity>().Where(predicate).AsEnumerable();
+            return context.Set<TEntity>().Where(predicate);
         }
     }
 }
