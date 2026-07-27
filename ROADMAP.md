@@ -85,25 +85,45 @@ served locally.
 
 ---
 
-## Phase 2 - Security and dependency hygiene
+## Phase 2 - Security and dependency hygiene -- COMPLETE
 
-- [ ] **2.1 Clear every advisory.** Bootstrap's six are already gone. Merge or supersede the
-      remaining Dependabot PRs, then take the ones they miss (`jQuery.Validation`,
-      `Microsoft.AspNet.Identity.Owin`, `jQuery`). Target a clean restore with zero
-      NU1902/NU1903 warnings.
-- [ ] **2.2 Turn off debug compilation.** `debug="true"` is still committed in `Web.config`.
-- [ ] **2.3 Harden registration.** Add `[ValidateAntiForgeryToken]` to the POST action - the view
-      already emits a token nobody validates. Add a `ModelState.IsValid` guard, annotate
-      `UserRegisterVM` with `[Required]`, `[EmailAddress]`, `[DataType(DataType.Password)]` and a
-      confirm-password field, and surface `IdentityResult.Errors` instead of discarding them.
-      Right now the password renders as a plain-text input.
-- [ ] **2.4 Finish or remove auth.** There is only Register - no Login, no Logout - and
-      `Startup.cs` points `LoginPath` at `/Account/Login`, which does not exist and misspells the
-      actual controller. `AcountController.Index` also returns a view that was never created, so
-      the "Back to List" link on the register page throws. Either complete the flow or cut it and
-      say so in the README. A half-wired auth system reads worse than none.
-- [ ] **2.5 Scrub config leftovers.** Remove the commented-out connection strings carrying an old
-      machine name (`KEPLER-452B\DEUTERIUM`) from `Web.config` and `App.config`.
+**Verified 2026-07-27:** `nuget restore` reports **zero** advisories; clean rebuild with **zero**
+warnings; full auth cycle (register -> auto sign-in -> log out -> log in -> wrong password
+rejected) passes against LocalDB with correctly hashed passwords; catalogue endpoints unaffected.
+
+- [x] **2.1 Clear every advisory.** Bootstrap's six went in Phase 1. Upgraded
+      `Newtonsoft.Json` 6.0.4 -> 13.0.4, the whole `Microsoft.Owin` family 4.0.1/3.0.1 -> 4.2.3,
+      the `Microsoft.AspNet.Identity` family 2.2.2 -> 2.2.4, `jQuery` 3.4.1 -> 3.7.1 and
+      `jQuery.Validation` 1.11.1 -> 1.21.0. Restore is now clean. This supersedes all four open
+      Dependabot PRs - close them rather than merging, since they target versions we have passed.
+- [x] **2.2 Turn off debug compilation.** `debug="false"` in `Web.config`.
+- [x] **2.3 Harden registration.** Added `[ValidateAntiForgeryToken]` (verified: a POST without a
+      token is rejected), a `ModelState.IsValid` guard, `[Required]` / `[EmailAddress]` /
+      `[DataType(DataType.Password)]` / `[StringLength]` annotations, a confirm-password field
+      with `[Compare]`, and `IdentityResult.Errors` surfaced into the validation summary instead
+      of being discarded. The password renders masked now, not as plain text.
+- [x] **2.4 Finish auth** (chosen over removing it). Added `Login` GET/POST, `Logout` POST, and a
+      `Login` view; put the previously-declared-but-unused `AuthManager` to work; made the
+      controller `[Authorize]` by default with `[AllowAnonymous]` on the public actions; and
+      added log in / register / log out links to the navbar so the flow is discoverable. Deleted
+      the `Index` action that returned a view which was never created. `LoginPath` now points at
+      the real path.
+- [x] **2.5 Scrub config leftovers.** Commented-out connection strings carrying the old machine
+      name removed from `Web.config` and `App.config`.
+
+**Found and fixed while verifying** (not in the original plan):
+
+- Upgrading OWIN produced MSB3247 assembly conflicts, because `Microsoft.AspNet.Identity.Owin`
+  2.2.4 still references the 3.0.1 security assemblies. Added binding redirects for
+  `Microsoft.Owin.Security`, `.Security.Cookies` and `.Security.OAuth`, plus one for
+  `Newtonsoft.Json`, which had none at all despite the 6.x -> 13.x jump.
+- jQuery's upgrade renames the physical files, so `_Layout` and the `.csproj` both needed
+  updating - easy to miss, and it would have 404'd every script on the page.
+- Guarded the login `returnUrl` with `Url.IsLocalUrl` to avoid an open redirect, and added a
+  `Dispose` override for the user manager.
+
+**Carried forward:** `LoginPath` is `/Acount/Login` because the controller really is spelled
+that way. Phase 3.7 renames it; that path must move at the same time.
 
 ---
 

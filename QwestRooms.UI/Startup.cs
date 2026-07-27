@@ -20,9 +20,10 @@ namespace QwestRooms.UI
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                //Если нет прав то редирект по ссылке
-                LoginPath = new PathString("/Account/Login")
-
+                // Where an unauthenticated user gets sent. Note the controller really is spelled
+                // "Acount" -- correcting that typo is Phase 3.7, and this path has to match it
+                // until then.
+                LoginPath = new PathString("/Acount/Login")
             });
         }
 
