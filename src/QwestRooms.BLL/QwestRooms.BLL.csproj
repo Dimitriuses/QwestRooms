@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>QwestRooms.BLL</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QwestRooms.DAL\QwestRooms.DAL.csproj" />
+  </ItemGroup>
+
+</Project>

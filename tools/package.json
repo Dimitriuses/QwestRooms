@@ -1,0 +1,12 @@
+{
+  "name": "qwestrooms-tools",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Browser automation used only to capture the screenshots in docs/images.",
+  "scripts": {
+    "screenshots": "node capture-screenshots.js"
+  },
+  "devDependencies": {
+    "playwright": "^1.49.0"
+  }
+}

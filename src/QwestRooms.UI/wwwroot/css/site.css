@@ -1,0 +1,103 @@
+.page-body {
+    padding-top: 5rem;
+    padding-bottom: 2rem;
+}
+
+/* The catalogue grid. A CSS grid rather than the floated fixed-width cards the 2019 version
+   used, so the page reflows on a phone instead of overflowing sideways. */
+.room-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: 1rem;
+}
+
+/* Each card flips on hover to show its practical details. Height is fixed so the grid rows line
+   up and so the two faces can be stacked. */
+.flip-card {
+    height: 32rem;
+    perspective: 1000px;
+    background: none;
+    border: 0;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.7s;
+    transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner,
+.flip-card:focus-within .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border: 1px solid var(--bs-border-color);
+    border-radius: var(--bs-border-radius);
+    backface-visibility: hidden;
+}
+
+.flip-card-front {
+    background-color: var(--bs-body-bg);
+}
+
+.flip-card-back {
+    background-color: #111;
+    color: #f8f9fa;
+    transform: rotateY(180deg);
+}
+
+/* The back carries six lines of practical detail, so it gets a shorter poster and tighter
+   leading than the front. Without this the email address falls off the bottom of the card. */
+.flip-card-back .room-poster {
+    height: 14rem;
+}
+
+.flip-card-back .card-text {
+    margin-bottom: 0.6rem;
+}
+
+.room-poster {
+    display: block;
+    width: 100%;
+    height: 17rem;
+    object-fit: cover;
+}
+
+.room-title {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: 3rem;
+}
+
+.room-blurb {
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Fifteen countries and sixty-nine cities do not fit on a screen, so the option lists scroll. */
+.dropdown-scroll {
+    max-height: 18rem;
+    overflow-y: auto;
+}
+
+/* Thirty-eight page links wrap onto two rows rather than pushing the layout wider. */
+.pagination {
+    flex-wrap: wrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .flip-card-inner {
+        transition: none;
+    }
+}

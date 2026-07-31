@@ -1,0 +1,77 @@
+@model RoomCatalogViewModel
+
+@{
+    ViewData["Title"] = "Rooms";
+}
+
+<div class="d-flex align-items-center gap-3 mb-2">
+    <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#filterPanel"
+            aria-expanded="false" aria-controls="filterPanel">
+        Filters
+    </button>
+    <span class="text-body-secondary" id="resultCount">@Model.List.Page.TotalCount rooms</span>
+</div>
+
+<div class="collapse mb-3" id="filterPanel">
+    <div class="card card-body">
+        <div class="row g-2 align-items-end">
+            <div class="col-auto">
+                <label class="form-label d-block" for="countryButton">Country</label>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="countryButton"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                        Any
+                    </button>
+                    <div id="countryMenu" class="dropdown-menu dropdown-scroll" aria-labelledby="countryButton">
+                        <partial name="_CountryOptions" model="Model.Countries" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-auto">
+                <label class="form-label d-block" for="cityButton">City</label>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="cityButton"
+                            data-bs-toggle="dropdown" aria-expanded="false" disabled>
+                        Any
+                    </button>
+                    <div id="cityMenu" class="dropdown-menu dropdown-scroll" aria-labelledby="cityButton"></div>
+                </div>
+            </div>
+
+            <div class="col-auto">
+                <label class="form-label d-block" for="addressButton">Address</label>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="addressButton"
+                            data-bs-toggle="dropdown" aria-expanded="false" disabled>
+                        Any
+                    </button>
+                    <div id="addressMenu" class="dropdown-menu dropdown-scroll" aria-labelledby="addressButton"></div>
+                </div>
+            </div>
+
+            <div class="col-auto">
+                <button type="button" id="applyFilter" class="btn btn-primary">Apply</button>
+                <button type="button" id="clearFilter" class="btn btn-outline-secondary">Clear</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="rooms" aria-live="polite">
+    <partial name="_RoomGrid" model="Model.List" />
+</div>
+
+@* The endpoints are handed to the script as data rather than baked into it, so catalogue.js
+   stays a plain static file with no Razor in it and no inline script in the page. *@
+<script type="application/json" id="catalogueEndpoints">
+    {
+        "grid": "@Url.Action("Grid", "Room")",
+        "cities": "@Url.Action("Cities", "Room")",
+        "addresses": "@Url.Action("Addresses", "Room")"
+    }
+</script>
+
+@section Scripts {
+    <script src="~/js/catalogue.js" asp-append-version="true"></script>
+}

@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>QwestRooms.UI</RootNamespace>
+    <UserSecretsId>qwestrooms-ui</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QwestRooms.BLL\QwestRooms.BLL.csproj" />
+  </ItemGroup>
+
+</Project>

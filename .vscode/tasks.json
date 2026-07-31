@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "options": {
     "shell": {
-      "executable": "powershell.exe",
+      "executable": "pwsh",
       "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
     }
   },
@@ -29,22 +29,23 @@
     },
     {
       "label": "run",
-      "detail": "Build, start IIS Express and open the browser",
+      "detail": "Start the site on http://localhost:5188",
       "type": "shell",
       "command": "./tools/dev.ps1 run",
       "problemMatcher": []
     },
     {
-      "label": "stop",
+      "label": "reseed database",
+      "detail": "Delete the local SQLite file so the next run reloads MockData/*.sql",
       "type": "shell",
-      "command": "./tools/dev.ps1 stop",
+      "command": "./tools/dev.ps1 reseed",
       "problemMatcher": []
     },
     {
-      "label": "reseed database",
-      "detail": "Drop the local database so the next run reloads MockData/*.sql",
+      "label": "screenshots",
+      "detail": "Start the site, drive it in a browser and write docs/images/*.png",
       "type": "shell",
-      "command": "./tools/dev.ps1 reseed",
+      "command": "./tools/dev.ps1 screenshots",
       "problemMatcher": []
     }
   ]

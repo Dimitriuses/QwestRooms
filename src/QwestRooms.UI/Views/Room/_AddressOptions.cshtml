@@ -1,0 +1,13 @@
+@model IReadOnlyList<AddressDto>
+
+@if (Model.Count == 0)
+{
+    <span class="dropdown-item-text text-body-secondary">No addresses</span>
+}
+
+@foreach (var address in Model)
+{
+    <button type="button" class="dropdown-item js-address" data-id="@address.Id">
+        @address.Street.Name @address.HouseNumber
+    </button>
+}

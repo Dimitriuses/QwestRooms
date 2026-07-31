@@ -2,55 +2,125 @@ name: build
 
 on:
   push:
-    branches: [master, cleanup]
+    branches: [master]
   pull_request:
     branches: [master]
   workflow_dispatch:
 
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
 jobs:
+  # The project was written on Windows, against SQL Server LocalDB, and could not have run
+  # anywhere else. Building and testing on both runners is how that claim gets retired.
   build:
-    # ASP.NET MVC 5 on .NET Framework 4.8 needs full MSBuild, so this is Windows-only.
-    runs-on: windows-latest
+    name: build and test (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up MSBuild
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Set up NuGet
-        uses: NuGet/setup-nuget@v2
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
 
       - name: Cache NuGet packages
         uses: actions/cache@v4
         with:
-          path: packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.config', '**/*.csproj') }}
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj', '**/Directory.Build.props') }}
           restore-keys: ${{ runner.os }}-nuget-
 
-      # nuget restore handles both the packages.config projects and the PackageReference
-      # test project; msbuild -t:restore alone would miss the former.
       - name: Restore
-        run: nuget restore QwestRooms.sln
+        run: dotnet restore QwestRooms.sln
 
+      # Directory.Build.props sets TreatWarningsAsErrors, so a warning on either platform fails
+      # here rather than being merged.
       - name: Build
-        run: msbuild QwestRooms.sln /p:Configuration=Release /v:minimal /nologo
+        run: dotnet build QwestRooms.sln -c Release --no-restore
 
       - name: Test
-        run: |
-          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
-          $vstest = & $vswhere -latest -products * -find "**\TestPlatform\vstest.console.exe" |
-                    Select-Object -First 1
-          if (-not $vstest) { throw "vstest.console.exe not found on the runner" }
-          & $vstest "QwestRooms.Tests\bin\Release\net48\QwestRooms.Tests.dll" `
-                    /Logger:trx`;LogFileName=results.trx `
-                    /ResultsDirectory:TestResults
-          if ($LASTEXITCODE -ne 0) { throw "tests failed" }
+        run: >
+          dotnet test QwestRooms.sln -c Release --no-build
+          --logger "trx;LogFileName=results.trx"
+          --results-directory TestResults
 
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: test-results
+          name: test-results-${{ matrix.os }}
           path: TestResults/*.trx
           if-no-files-found: warn
+
+  # "It is cross-platform" is a claim until something starts the real application on Linux and
+  # asks it for a page. This job does that: it boots the site, waits for the database to be
+  # created and seeded, and then exercises the catalogue, the pager and the cascading filter.
+  smoke-test-linux:
+    name: run the site on linux
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Publish
+        run: dotnet publish src/QwestRooms.UI -c Release -o published
+
+      - name: Start the site
+        run: |
+          ./published/QwestRooms.UI --urls http://localhost:5188 > site.log 2>&1 &
+          echo "PID=$!" >> "$GITHUB_ENV"
+
+      - name: Wait for the catalogue to be seeded
+        run: |
+          for attempt in $(seq 1 60); do
+            if curl --silent --fail http://localhost:5188/healthz > health.json; then
+              echo "healthz: $(cat health.json)"
+              break
+            fi
+            sleep 2
+          done
+          test -s health.json || { echo "the site never answered"; cat site.log; exit 1; }
+
+      - name: The catalogue serves a full page of rooms
+        run: |
+          rooms=$(python3 -c "import json;print(json.load(open('health.json'))['rooms'])")
+          test "$rooms" = "450" || { echo "expected 450 seeded rooms, got $rooms"; exit 1; }
+
+          curl --silent --fail http://localhost:5188/ > home.html
+          cards=$(grep -c 'class="card flip-card"' home.html)
+          test "$cards" = "27" || { echo "expected 27 cards on page one, got $cards"; exit 1; }
+
+      - name: Paging and filtering compose
+        run: |
+          # Ukraine has 30 rooms: 27 on the first page and 3 on the second. If the filter were
+          # dropped by the pager -- which is what happened when it lived in Session -- the second
+          # page would come back with 27 cards from the whole catalogue.
+          curl --silent --fail 'http://localhost:5188/Room/Grid?countryId=1&page=2' > filtered.html
+          cards=$(grep -c 'class="card flip-card"' filtered.html)
+          test "$cards" = "3" || { echo "expected 3 cards on the filtered second page, got $cards"; exit 1; }
+          grep -q 'data-total-count="30"' filtered.html || { echo "the filter did not narrow to 30 rooms"; exit 1; }
+
+      - name: The cascading filter offers each city once
+        run: |
+          curl --silent --fail 'http://localhost:5188/Room/Cities?countryId=1' > cities.html
+          test "$(grep -c '>Kyiv<' cities.html)" = "1" || { echo "Kyiv was offered more than once"; exit 1; }
+          grep -q 'Warsaw' cities.html && { echo "a Polish city was offered for Ukraine"; exit 1; }
+          exit 0
+
+      - name: Stop the site
+        if: always()
+        run: |
+          kill "$PID" || true
+          echo "--- application log ---"
+          cat site.log

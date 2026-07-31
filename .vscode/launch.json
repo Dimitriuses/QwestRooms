@@ -1,0 +1,52 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "QwestRooms (web)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/QwestRooms.UI/bin/Debug/net8.0/QwestRooms.UI.dll",
+      "args": ["--urls", "http://localhost:5188"],
+      "cwd": "${workspaceFolder}/src/QwestRooms.UI",
+      "stopAtEntry": false,
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https?://\\S+)",
+        "uriFormat": "%s"
+      },
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    {
+      "name": "QwestRooms (web, SQL logging off)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "${workspaceFolder}/src/QwestRooms.UI/bin/Debug/net8.0/QwestRooms.UI.dll",
+      "args": ["--urls", "http://localhost:5188"],
+      "cwd": "${workspaceFolder}/src/QwestRooms.UI",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Production"
+      }
+    },
+    {
+      "name": "Tests",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "build",
+      "program": "dotnet",
+      "args": ["test", "${workspaceFolder}/QwestRooms.sln", "--no-build"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Web + tests",
+      "configurations": ["QwestRooms (web)", "Tests"],
+      "stopAll": true
+    }
+  ]
+}

@@ -15,6 +15,10 @@
         .\tools\generate-seed.ps1
         .\tools\dev.ps1 reseed
         .\tools\dev.ps1 run
+
+    The SQL is deliberately dialect-neutral -- unquoted identifiers, no batch separators, no
+    identity-insert -- so the same scripts load into SQLite today and would load into SQL Server
+    unchanged.
 #>
 [CmdletBinding()]
 param(
@@ -25,8 +29,8 @@ param(
 $ErrorActionPreference = 'Stop'
 
 $RepoRoot = Split-Path -Parent $PSScriptRoot
-$DataDir  = Join-Path $RepoRoot 'QwestRooms.DAL\MockData'
-$ArtDir   = Join-Path $RepoRoot 'QwestRooms.UI\Content\rooms'
+$DataDir  = Join-Path $RepoRoot 'src\QwestRooms.DAL\MockData'
+$ArtDir   = Join-Path $RepoRoot 'src\QwestRooms.UI\wwwroot\img\rooms'
 
 $random = [System.Random]::new($Seed)
 function Pick($items) { return $items[$random.Next(0, $items.Count)] }
@@ -264,7 +268,7 @@ function Write-Poster($theme) {
 if (-not (Test-Path $ArtDir)) { New-Item -ItemType Directory -Force $ArtDir | Out-Null }
 Get-ChildItem $ArtDir -Filter *.svg -ErrorAction SilentlyContinue | Remove-Item -Force
 foreach ($t in $themes) { Write-Poster $t }
-Write-Host "Wrote $($themes.Count) posters to Content/rooms" -ForegroundColor Green
+Write-Host "Wrote $($themes.Count) posters to wwwroot/img/rooms" -ForegroundColor Green
 
 # Countries, cities and streets, tracking the identity ids each insert will receive.
 $countryLines = @(); $cityLines = @(); $streetLines = @()
@@ -323,7 +327,7 @@ for ($cid = 1; $cid -le $geography.Count; $cid++) {
         $city   = Pick $cityIdsByCountry[$cid]
         $street = Pick $streetIdsByCountry[$cid]
         $house  = PickInt 1 180
-        $addressLines += "insert into Addresses (HouseNumber, City_Id, Country_Id, Street_Id) values ('$house', $city, $cid, $street);"
+        $addressLines += "insert into Addresses (HouseNumber, CityId, CountryId, StreetId) values ('$house', $city, $cid, $street);"
 
         $roomId++
         $name    = $concept.Name
@@ -333,21 +337,21 @@ for ($cid = 1; $cid -le $geography.Count; $cid++) {
         $minP    = PickInt 2 3
         $maxP    = $minP + (PickInt 2 4)
         $minutes = (PickInt 3 6) * 15          # 45 to 90 minutes
-        # TimeToPass maps to SQL `time`, where the minute component must stay under 60, so 90
-        # minutes has to be written as 01:30:00 rather than 00:90:00.
+        # TimeToPass is stored as text and read back with TimeSpan.Parse, so 90 minutes has to be
+        # written as 01:30:00 rather than 00:90:00.
         $span    = [TimeSpan]::FromMinutes($minutes)
         $duration = '{0:00}:{1:00}:00' -f $span.Hours, $span.Minutes
         $rating  = PickInt 6 10                # out of 10
         $fear    = [Math]::Max(1, [Math]::Min(5, $concept.Fear + (PickInt -1 1)))
         $diff    = PickInt 2 5                 # out of 5
-        $logo    = "/Content/rooms/$($concept.Key).svg"
+        $logo    = "/img/rooms/$($concept.Key).svg"
 
-        $roomLines += ("insert into Rooms (Name, Description, TimeToPass, MinPlayers, MaxPlayers, Phone, Email, Rating, FearLevel, Difficulty, LogoPath, Address_Id, Company_Id) values " +
+        $roomLines += ("insert into Rooms (Name, Description, TimeToPass, MinPlayers, MaxPlayers, Phone, Email, Rating, FearLevel, Difficulty, LogoPath, AddressId, CompanyId) values " +
                        "('$(SqlEscape $name)', '$(SqlEscape $blurb)', '$duration', $minP, $maxP, " +
                        "'+380 44 $((PickInt 100 999)) $((PickInt 1000 9999))', 'book$roomId@qwestrooms.example', " +
                        "$rating, $fear, $diff, '$logo', $addressId, $company);")
 
-        $imageLines += "insert into Images (Path, Room_Id) values ('$logo', $roomId);"
+        $imageLines += "insert into Images (Path, RoomId) values ('$logo', $roomId);"
     }
 }
 

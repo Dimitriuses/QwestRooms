@@ -1,157 +1,95 @@
 <#
 .SYNOPSIS
-    Developer helper for QwestRooms: restore, build, test, run and reseed.
+    Developer entry point for QwestRooms: build, test, run, reseed and capture screenshots.
 
 .DESCRIPTION
-    This project targets .NET Framework 4.8 and ASP.NET MVC 5, so it needs full MSBuild and
-    IIS Express rather than the `dotnet` CLI. This script locates both via vswhere so the same
-    commands work from VS Code, a plain terminal, or CI.
+    One definition of how this repository builds and runs, callable from a terminal, from VS Code
+    tasks and from CI. Written for Windows PowerShell 5.1 and PowerShell 7 alike -- no &&, no
+    ternary, no null-coalescing -- so it works on Windows out of the box and on Linux and macOS
+    under pwsh.
 
 .EXAMPLE
-    .\tools\dev.ps1 restore
-    .\tools\dev.ps1 build -Configuration Release
-    .\tools\dev.ps1 test
-    .\tools\dev.ps1 run
-    .\tools\dev.ps1 stop
-    .\tools\dev.ps1 reseed
+    ./tools/dev.ps1 build
+    ./tools/dev.ps1 test
+    ./tools/dev.ps1 run
+    ./tools/dev.ps1 reseed
+    ./tools/dev.ps1 screenshots
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true, Position = 0)]
-    [ValidateSet('restore', 'build', 'test', 'run', 'stop', 'reseed')]
+    [ValidateSet('restore', 'build', 'test', 'run', 'reseed', 'screenshots')]
     [string]$Command,
 
     [ValidateSet('Debug', 'Release')]
-    [string]$Configuration = 'Debug'
+    [string]$Configuration = 'Debug',
+
+    [int]$Port = 5188
 )
 
 $ErrorActionPreference = 'Stop'
 
+# $PSScriptRoot is empty while PowerShell 5.1 evaluates param() defaults, so these are filled in
+# here rather than in the parameter list.
 $RepoRoot   = Split-Path -Parent $PSScriptRoot
 $Solution   = Join-Path $RepoRoot 'QwestRooms.sln'
-$SiteFolder = Join-Path $RepoRoot 'QwestRooms.UI'
-$Port       = 58221
-$Database   = 'QwestRooms.DAL.RoomsContext'
-$LocalDb    = '(LocalDb)\MSSQLLocalDB'
+$WebProject = Join-Path $RepoRoot 'src/QwestRooms.UI/QwestRooms.UI.csproj'
+$Database   = Join-Path $RepoRoot 'src/QwestRooms.UI/qwestrooms.db'
 
-function Find-VsWhere {
-    $p = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
-    if (-not (Test-Path $p)) {
-        throw "vswhere.exe not found. Visual Studio 2022 or the Build Tools are required."
-    }
-    return $p
-}
+function Invoke-Dotnet {
+    param([string[]]$DotnetArgs)
 
-function Find-MSBuild {
-    $vswhere = Find-VsWhere
-    $path = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild `
-                       -find 'MSBuild\**\Bin\MSBuild.exe' | Select-Object -First 1
-    if (-not $path) { throw "MSBuild not found. Install the .NET desktop build tools." }
-    return $path
-}
-
-function Find-VsTest {
-    $vswhere = Find-VsWhere
-    $path = & $vswhere -latest -products * -find '**\TestPlatform\vstest.console.exe' |
-            Select-Object -First 1
-    if (-not $path) { throw "vstest.console.exe not found." }
-    return $path
-}
-
-function Find-IisExpress {
-    $candidates = @(
-        (Join-Path $env:ProgramFiles 'IIS Express\iisexpress.exe'),
-        (Join-Path ${env:ProgramFiles(x86)} 'IIS Express\iisexpress.exe')
-    )
-    $path = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
-    if (-not $path) { throw "IIS Express not found. It installs with Visual Studio." }
-    return $path
-}
-
-function Get-NuGet {
-    # packages.config projects cannot be restored by `msbuild -t:restore` or `dotnet restore`,
-    # so a real nuget.exe is required. Fetch it once into tools/ if it is not already on PATH.
-    $onPath = Get-Command nuget -ErrorAction SilentlyContinue
-    if ($onPath) { return $onPath.Source }
-
-    $local = Join-Path $PSScriptRoot 'nuget.exe'
-    if (-not (Test-Path $local)) {
-        Write-Host 'Downloading nuget.exe into tools/ ...' -ForegroundColor Cyan
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        Invoke-WebRequest 'https://dist.nuget.org/win-x86-commandline/latest/nuget.exe' `
-                          -OutFile $local
-    }
-    return $local
+    Write-Host "dotnet $($DotnetArgs -join ' ')" -ForegroundColor Cyan
+    & dotnet @DotnetArgs
+    if ($LASTEXITCODE -ne 0) { throw "dotnet $($DotnetArgs -join ' ') failed with exit code $LASTEXITCODE." }
 }
 
 function Invoke-Restore {
-    $nuget = Get-NuGet
-    Write-Host "Restoring packages..." -ForegroundColor Cyan
-    & $nuget restore $Solution -NonInteractive
-    if ($LASTEXITCODE -ne 0) { throw "Restore failed." }
+    Invoke-Dotnet @('restore', $Solution)
 }
 
 function Invoke-Build {
-    $msbuild = Find-MSBuild
-    Write-Host "Building ($Configuration)..." -ForegroundColor Cyan
-    & $msbuild $Solution "/p:Configuration=$Configuration" /v:minimal /nologo
-    if ($LASTEXITCODE -ne 0) { throw "Build failed." }
+    Invoke-Dotnet @('build', $Solution, '-c', $Configuration, '--nologo')
 }
 
 function Invoke-Test {
-    $vstest = Find-VsTest
-    $assembly = Join-Path $RepoRoot "QwestRooms.Tests\bin\$Configuration\net48\QwestRooms.Tests.dll"
-    if (-not (Test-Path $assembly)) { throw "Test assembly not found; build first." }
-    & $vstest $assembly '/Logger:console;verbosity=minimal'
-    if ($LASTEXITCODE -ne 0) { throw "Tests failed." }
-}
-
-function Stop-Site {
-    Get-Process iisexpress -ErrorAction SilentlyContinue | Stop-Process -Force
-    Write-Host "IIS Express stopped." -ForegroundColor Yellow
+    Invoke-Dotnet @('test', $Solution, '-c', $Configuration, '--nologo')
 }
 
 function Start-Site {
-    Stop-Site
-    $iis = Find-IisExpress
-    Start-Process -FilePath $iis -ArgumentList "/path:`"$SiteFolder`"", "/port:$Port" -WindowStyle Hidden
-    $url = "http://localhost:$Port/"
-    Write-Host "Starting $url" -ForegroundColor Cyan
-    Write-Host "First request creates and seeds the database, so it can take a minute." -ForegroundColor DarkGray
-
-    for ($i = 0; $i -lt 150; $i++) {
-        try {
-            Invoke-WebRequest $url -UseBasicParsing -TimeoutSec 600 | Out-Null
-            Write-Host "Ready: $url" -ForegroundColor Green
-            Start-Process $url
-            return
-        }
-        catch { Start-Sleep -Seconds 2 }
-    }
-    throw "The site did not respond. Check that it built, and that LocalDB is available."
+    Write-Host "Starting http://localhost:$Port/ -- the first run creates and seeds the database." -ForegroundColor Cyan
+    Invoke-Dotnet @('run', '--project', $WebProject, '-c', $Configuration, '--urls', "http://localhost:$Port")
 }
 
 function Reset-Database {
-    # The initializer only rebuilds when the *model* changes, so editing the seed scripts alone
-    # will not reload them. Dropping the database makes the next request recreate and reseed it.
-    Stop-Site
-    $sql = @"
-if db_id('$Database') is not null
-begin
-    alter database [$Database] set single_user with rollback immediate;
-    drop database [$Database];
-end
-"@
-    & sqlcmd -S $LocalDb -d master -Q $sql -b
-    if ($LASTEXITCODE -ne 0) { throw "Could not drop the database." }
-    Write-Host "Database dropped. Run './tools/dev.ps1 run' to recreate and reseed it." -ForegroundColor Green
+    # The seed loads only into an empty catalogue, so deleting the file is how you reload it after
+    # editing MockData/*.sql or re-running generate-seed.ps1.
+    foreach ($suffix in @('', '-shm', '-wal')) {
+        $path = $Database + $suffix
+        if (Test-Path $path) {
+            Remove-Item $path -Force
+            Write-Host "Deleted $path" -ForegroundColor Yellow
+        }
+    }
+
+    Write-Host "Run './tools/dev.ps1 run' to recreate and reseed it." -ForegroundColor Green
+}
+
+function Invoke-Screenshots {
+    $script = Join-Path $PSScriptRoot 'capture-screenshots.js'
+    if (-not (Get-Command node -ErrorAction SilentlyContinue)) {
+        throw "node was not found on PATH; it is needed to drive the browser that takes the screenshots."
+    }
+
+    & node $script --port $Port
+    if ($LASTEXITCODE -ne 0) { throw "Screenshot capture failed." }
 }
 
 switch ($Command) {
-    'restore' { Invoke-Restore }
-    'build'   { Invoke-Restore; Invoke-Build }
-    'test'    { Invoke-Restore; Invoke-Build; Invoke-Test }
-    'run'     { Invoke-Restore; Invoke-Build; Start-Site }
-    'stop'    { Stop-Site }
-    'reseed'  { Reset-Database }
+    'restore'     { Invoke-Restore }
+    'build'       { Invoke-Build }
+    'test'        { Invoke-Test }
+    'run'         { Start-Site }
+    'reseed'      { Reset-Database }
+    'screenshots' { Invoke-Screenshots }
 }
