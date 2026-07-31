@@ -1,9 +1,21 @@
 {
   "version": "2.0.0",
+
+  // tools/dev.ps1 is written to Windows PowerShell 5.1 rules as well as PowerShell 7, so it runs
+  // under either. Windows gets powershell.exe, which is always present; everywhere else needs
+  // pwsh, which is the only PowerShell there is on Linux and macOS.
   "options": {
     "shell": {
       "executable": "pwsh",
       "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
+    }
+  },
+  "windows": {
+    "options": {
+      "shell": {
+        "executable": "powershell.exe",
+        "args": ["-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
+      }
     }
   },
   "tasks": [
